@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<title>Tests</title>
+<link rel="stylesheet" href="qunit.css">
+
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+	
+<!--
+<script src="../src/Noun.js"></script>
+<script src="../src/Verb.js"></script>
+<script src="../src/Adjective.js"></script>
+<script src="../src/Adverb.js"></script>
+
+<script src="../src/API.js"></script>
+-->
+
+<script src="../language.ru.js"></script>
+
+
+<script src="qunit.js"></script>
+
+<script type="text/javascript">
+
+	test("technical", function(){
+		equal(util.removePrefixes("пренаипрекраснейший"), "краснейший", "removePrefixes")
+		
+	})
+
+	test("noun: cases", function(){
+		//падежатор
+		equal(imagine(/{{ noun("бурлесок")|case("nominative") }}/), "бурлесок")
+		equal(imagine(/{{ noun("бурлесок")|case("genitive") }}/), "бурлеска")
+		equal(imagine(/{{ noun("бурлесок")|case("dative") }}/), "бурлеску")
+		equal(imagine(/{{ noun("бурлесок")|case("accusative") }}/), "бурлеска")
+		equal(imagine(/{{ noun("бурлесок")|case("instrumental") }}/), "бурлеском")
+		equal(imagine(/{{ noun("бурлесок")|case("prepositional") }}/), "бурлеске")
+	})
