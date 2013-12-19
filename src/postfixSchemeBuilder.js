@@ -16,12 +16,18 @@
 * specialForm - of word
 */
 
+//global vars
+//words from the source in ascending order 
+var ascWords;
+
+
 
 //----------------------- Utils
 /**
 * Inserts new word (with forms) to the postfixes dict passed
 */
 function addPfWord(pfDict, npf, spf, words){
+	//console.log("addPfWord `" + npf + "` `" + spf + "`");
 	if (!pfDict[npf]) pfDict[npf] = {};
 	if (!pfDict[npf][spf]) pfDict[npf][spf] = [];
 	if (pfDict[npf][spf].indexOf(words) == -1) pfDict[npf][spf].push(words);
@@ -170,7 +176,7 @@ function shrinkPostfixes(pfs){
 	//from every shorter group redistribute coincidences to the larger group
 	for (var p = 0; p < ascPfs.length; p++){
 		var pf = ascPfs[p];
-		var spf = Object.getOwnPropertyNames(pfs[pf])[0];
+		var spf = pfs[pf]//Object.getOwnPropertyNames(pfs[pf])[0];
 		//console.group("try shrinking " + pf)
 
 		//find the shortest non-contradictory form
@@ -183,7 +189,7 @@ function shrinkPostfixes(pfs){
 			//console.log("try " + pf + " " + spf + " → " + shorterNpf + " " + shorterSpf)
 
 			if ( !isShrinkable(pfs, shorterNpf, shorterSpf) ||
-				prefixize(shorterSpf, pf.slice(0, pf.length - shorterNpf.length)) !== Object.getOwnPropertyNames(pfs[pf])[0] || //lost own forms
+				prefixize(shorterSpf, pf.slice(0, pf.length - shorterNpf.length)) !== pfs[pf]/*Object.getOwnPropertyNames(pfs[pf])[0]*/ || //lost own forms
 				( pfsToShrink[pf] && pfsToShrink[pf][shorterNpf] && pfsToShrink[pf][shorterNpf] !== shorterSpf)//othr is plnd
 				) {
 				//console.log("fail")
@@ -211,9 +217,9 @@ function shrinkPostfixes(pfs){
 		var shorterNpf = Object.getOwnPropertyNames(pfsToShrink[longerNpf])[0],
 			shorterSpf = pfsToShrink[longerNpf][shorterNpf];
 
-		//console.log("shrink " + longerNpf + " " + Object.getOwnPropertyNames(pfs[longerNpf])[0] + " to " + shorterNpf + " " + shorterSpf)
+		console.log("shrink " + longerNpf + " " + /*Object.getOwnPropertyNames(pfs[longerNpf])[0]*/pfs[longerNpf] + " to " + shorterNpf + " " + shorterSpf)
 		if (!pfs[shorterNpf]) pfs[shorterNpf] = {};
-		pfs[shorterNpf][shorterSpf] = (pfs[shorterNpf][shorterSpf] || []).concat(pfs[longerNpf][Object.getOwnPropertyNames(pfs[longerNpf])[0]]);
+		pfs[shorterNpf][shorterSpf] = (pfs[shorterNpf][shorterSpf] || []).concat(pfs[longerNpf][/*Object.getOwnPropertyNames(pfs[longerNpf])[0]*/pfs[longerNpf]]);
 		delete pfs[longerNpf]
 	}
 
@@ -228,9 +234,17 @@ function isShrinkable(pfs, shortNpf, shortSpf){
 	//find the reason not to shrink it
 	for (var pf in pfs){
 		//check whether found suffix is mergeable with the short one
-		if (pf === shortNpf && Object.getOwnPropertyNames(pfs[pf])[0] !== shortSpf){
+		if (pf === shortNpf && /*Object.getOwnPropertyNames(pfs[pf])[0]*/pfs[pf] !== shortSpf){
 			//console.log("can’t shrink " + pfs[pf] + " to " + shortSpf)
 			return false
+		}
+	}
+
+	//ensure short postfix not blocking fully another normal form of word
+	for (var k = 0; k < ascWords.length; k++){
+		var word = ascWords[k]
+		if (shortNpf === word){
+			return false;
 		}
 	}
 
@@ -244,7 +258,7 @@ function cleanEmptyPfs(pfs){
 		for (var spf in pfs[npf]){
 			if (!pfs[npf][spf].length) delete pfs[npf][spf];
 		}
-		if (!Object.getOwnPropertyNames(pfs[npf]).length) delete pfs[npf]
+		if (!/*Object.getOwnPropertyNames(pfs[npf]).length*/pfs[npf]) delete pfs[npf]
 	}
 }
 
@@ -256,7 +270,11 @@ function isDominantSpf(spfSet, targetSpf){
 
 function getDominantSpf(spfSet){
 	var spfs = Object.getOwnPropertyNames(spfSet);
-	spfs = spfs.sort();
+
+
+	spfs = spfs.sort(function(a, b){
+		return spfSet[a][0].split(" ")[0].length - spfSet[b][0].split(" ")[0].length
+	});
 
 	var maxNum = 0, maxSpf = spfs[0];
 
@@ -271,21 +289,20 @@ function getDominantSpf(spfSet){
 	return maxSpf;
 }
 
-//returns min symbol different by nf - sf
-function firstDiffSym(nf, sf){
-
-}
-
 
 //----------------------------- Main code
 
-//Builds initial postfixes tree
-function parseSource(source){
+//Builds initial postfixes tree (minimal possible postfixes)
+function getMinPostfixes(source){
 	//postfixes
 	var pfs = {};
 
+	//save words in ascending length order
+	ascWords = Object.getOwnPropertyNames(source).sort(function(a, b){ return a.length - b.length });
+
 	//Form an object keyed by pfs
-	for (var normalForm in source){
+	for (var w = 0; w < ascWords.length; w++){
+		var normalForm = ascWords[w];
 		var forms = source[normalForm].split(" ");
 
 		var firstDiffSym = normalForm.length;
@@ -308,6 +325,18 @@ function parseSource(source){
 
 		//save min different ending
 		var normalPf = normalForm.slice(firstDiffSym);
+
+
+		//ensure new postfix not blocking fully another normal form of word (or it’s pf), and if it does - enlarge own normalForm (pre-optimization)
+		for (var k = 0; k < ascWords.length; k++){
+			var word = ascWords[k]
+			if (normalPf === word.slice(0, normalPf.length)){
+				//console.log("EQ", normalForm, "`" + normalPf + "`", "→", "`" + normalForm.slice(Math.max((firstDiffSym - 1), 0)) + "`")
+				firstDiffSym = Math.max(firstDiffSym-1, 0);
+				normalPf = normalForm.slice(firstDiffSym);
+			}
+		}
+
 		var formsPfs = [];
 
 		//form pf forms
@@ -323,52 +352,62 @@ function parseSource(source){
 		}
 		var formsPfsStr = formsPfs.join(" ");
 
+		//console.log(normalForm, normalPf, formsPfsStr)
+
 		//keep list of normal pf - form pfs
 		addPfWord(pfs, normalPf, formsPfsStr, normalForm + " " + source[normalForm]);
-
-		//keep list of words
-		//if (!words[normalPf + " " + formsPfsStr]) words[normalPf + " " + formsPfsStr] = [];
-		//words[normalPf + " " + formsPfsStr].push(normalForm + " " + source[normalForm])
 	}
 
 	//redistribute pfs
 	redistributePostfixes(pfs);
 	cleanEmptyPfs(pfs);
 
-	//console.log("shrinks-------------")
-	/*var sTry = 0;
-	while (sTry++ < 9 && shrinkPostfixes(pfs)){
-		cleanEmptyPfs(pfs);
-	}*/
-
 	return pfs;
 }
 
 
 /**
-* pfs - an ambiguities dictionary like {"npf": {"f1 f2": [words], "f1 f2": [words]}}
-* Specialize less-probable pfs, withdrawing coincident words from the most probable forms (redistributing)
+* minpfs - an ambiguities dictionary like {"npf": {"f1 f2": [words], "f1 f2": [words]}}
 */
-function resolveAmbiguities(pfs){
-	var extPfs = {};
+function resolveAmbiguities(minPfs, source){
+	var pfs = {};
 
-	for (var npf in pfs){
+	//resolve ambiguity within each group
+	for (var pf in minPfs){
+		var solutionSet = resolveAmbiguity(pf, minPfs[pf]);
+		for (var pf in solutionSet){
+			pfs[pf] = solutionSet[pf];
+		}
+	}
+
+	return pfs;
+
+	//older tail-resolving algorithm
+	/*for (var npf in pfs){
 		//extend each special postfix so that it differs from all the words of the most probable normal postfix
-		for (var spf in pfs[npf]){
+
+		var ascWordLenSpfs = Object.getOwnPropertyNames(pfs[npf]).sort(
+			function(a, b){ 
+				return a.split(" ")[0].length - b.split(" ")[0].length
+			}
+		);
+
+		for (var s = 0; s < ascWordLenSpfs.length; s++){
+			var spf = ascWordLenSpfs[s];
+
 			//ignore top form
 			if (isDominantSpf(pfs[npf], spf)) {
 				if (!extPfs[npf]) extPfs[npf] = {};
 				extPfs[npf][spf] = [].concat(pfs[npf][spf]);
-				//console.log("miss", spf)
+				console.group("miss", pfs[npf][spf])
+				console.groupEnd();
 				continue;
 			}
 
+			console.group("specify ", pfs[npf][spf],  " `" + npf + " " + spf + "`")
+
 			var pfWords = pfs[npf][spf];
 
-			//words of max spf of this npf
-			var maxWords = pfs[npf][postfixes[npf]];
-
-			//console.group("specify `" + npf + " " + spf + "`")
 
 			for (var i = 0; i < pfWords.length; i++){
 				//1. build every possible extended with one symbol suffix			
@@ -376,13 +415,18 @@ function resolveAmbiguities(pfs){
 					newSym = nForm[nForm.length - npf.length - 1], 
 					extPf = newSym + npf;
 
+				if (newSym === undefined) {
+					console.error("nForm: " + nForm, "nPf: " +npf, pfs)
+					throw new Error("Impossible to resolve ambiduity: same form has different endings");
+				}
+
 				//console.log("word", pfWords[i], "→", extPf, prefixize(spf, newSym))
 				addPfWord(extPfs, extPf, prefixize(spf, newSym), pfWords[i]);
 
 				//redistribute max words by new extended pfs
 				redistributePostfixes(extPfs);
 			}
-			//console.groupEnd();
+			console.groupEnd();
 		}
 	}
 
@@ -390,76 +434,211 @@ function resolveAmbiguities(pfs){
 
 	cleanEmptyPfs(extPfs);
 
-	return extPfs;
+	return extPfs;*/
 }
 
+//obtains normal form and set of endings
+function resolveAmbiguity(minNpf, minSpfSet){
+	//Eating from the beginning algorithm:
+	// →     'русский' →  'русский'
+	// → 'белорусский' → 'орусский'
+	// → 'новорусский' → 'орусский'
 
-//------------------ Main call
+	var result = {};
+	var spfs = Object.getOwnPropertyNames(minSpfSet);
 
-//main postfixes table like {"npf": "pf1|pf1 pf2 pf3"}
-var postfixes = {};
-
-//just set of all words keyed by spf forms {"ов ович овна": ["first word forms", "second word forms"]}}
-var words = {};
-
-
-//parse initial source
-var pfDict = parseSource(source);
-console.log("Primary ambiguities", pfDict);
-
-//ambiguities
-var longestWord = 0;
-for (var word in source){
-	if (longestWord < word.length) {
-		longestWord = word.length;
+	//prevent already resolved items (one possible option only)
+	if (spfs.length <= 1) {
+		result[minNpf] = spfs[0];
+		return result;
 	}
-}
 
-var pfDict;
-for (var i = 0; i < longestWord; i++){
-	var extPfDict = resolveAmbiguities(pfDict)
-	//console.log(i + " ambiguities", extPfDict)
-	if (Object.getOwnPropertyNames(extPfDict).join(" ") === Object.getOwnPropertyNames(pfDict).join(" ") ){
-		pfDict = extPfDict;
-		break;
+	//form words set to resolve
+	var words = {};
+	for (var spf in minSpfSet){
+		for (var w = 0; w < minSpfSet[spf].length; w++){
+			var wArr = minSpfSet[spf][w].split(" ");
+			words[wArr[0]] = wArr.slice(1).join(" ");
+		}
 	}
-	pfDict = extPfDict;
+
+	//find max lengthy word
+	var maxWordLen = 0;
+	for (var word in words){
+		if (maxWordLen < word.length) {
+			maxWordLen = word.length;
+		}
+	}
+
+	console.log("Resolve words", words, "max", maxWordLen)
+
+	//fixed pfs
+	var results = {};
+
+	//start from the beginning, slice words
+	for (var s = 0; s < maxWordLen; s++){
+		//pass empty words list
+		if (!Object.getOwnPropertyNames(words).length) break;
+
+		var nForms = Object.getOwnPropertyNames(words).sort(function(a,b){ return a.length - b.length});
+
+		//set of one-level competitors, like { "ороссийский": {"ророссийский": "...longForms1...", "вороссийский": "...longForms2..."}}
+		var rivals = {};
+
+		//find max lengthy word on this step
+		var stepMaxWordLen = 0;
+		for (var word in words){
+			if (stepMaxWordLen < word.length) {
+				stepMaxWordLen = word.length;
+			}
+		}
+
+		console.group("resolve", s, "max", stepMaxWordLen, words)
+
+		//eat yao word
+		for (var w = 0; w < nForms.length; w++){
+			console.group("Eat word", nForms[w])
+			var nForm = nForms[w],
+				forms = words[nForm],
+				shortNForm = nForm.slice(Math.max(nForm.length - stepMaxWordLen + 1, 0)),
+				shortForms = unprefixize(forms, (nForm.length - shortNForm.length));
+
+			//if word isn’t sliced
+			if (shortNForm.length === nForm.length){
+				console.log("Miss", nForm)
+				console.groupEnd()
+				continue;
+			}
+
+			//if word is shorten than minimal diff ending - freeze
+			console.log(minNpf, nForm)
+			if (minNpf === nForm){
+				console.log("Freeze min", nForm)
+				console.groupEnd()
+				results[nForm] = forms;
+				delete words[nForm]
+				continue;
+			}
+
+			//if shorten key exists - check whether is is mergeable, merge
+			if (words[shortNForm] && words[shortNForm] === shortForms){
+				console.log("Merge", nForm)
+				console.groupEnd()
+				delete words[nForm];
+				words[shortNForm] = shortForms;
+				continue;
+			}
+
+			//if shorten key doesn’t exist - collect rivals object to pick max probeble one after
+			if (!words[shortNForm]){
+				if (!rivals[shortNForm]) rivals[shortNForm] = {};
+				rivals[shortNForm][nForm] = forms;
+				console.log("Pick rival", nForm, shortNForm)
+				console.groupEnd()
+				continue;
+			}
+
+			//if shorten key exists and is not equal to other key - freeze form as the topmost one.
+			if (words[shortNForm] && words[shortNForm] !== shortForms){
+				console.log("Freeze", nForm)
+				console.groupEnd()
+				results[nForm] = forms;
+				delete words[nForm];
+			}
+		}
+
+		//pick the winner of level within the rivals
+		if (Object.getOwnPropertyNames(rivals).length !== 0){  
+			console.group("Rivals competition", rivals)
+
+			for (var shortNpf in rivals){
+				var npfRivals = rivals[shortNpf];
+
+				console.group("rival", npfRivals)
+
+				//ignore absent competitors
+				if (Object.getOwnPropertyNames(npfRivals).length === 1){
+					words[shortNpf] = unprefixize(npfRivals[Object.getOwnPropertyNames(npfRivals)[0]], 1);
+					delete words[Object.getOwnPropertyNames(npfRivals)[0]]
+					console.log("ignore")
+					console.groupEnd();
+					continue;
+				}
+
+				//collect npfSpfNums frequencies
+				var npfSpfNums = {};
+				for (var npf in npfRivals){
+					var shortNpf = npf.slice(1),
+						shortForms = unprefixize(npfRivals[npf], 1);
+
+					if (!npfSpfNums[shortNpf + " " + shortForms]) npfSpfNums[shortNpf + " " + shortForms] = 1;
+					else npfSpfNums[shortNpf + " " + shortForms]++;
+				}
+				console.log("rival numbers", npfSpfNums)
+
+				//pick max frequency
+				var max = 0, maxShortNpf = "";
+				for (var npfSpf in npfSpfNums){
+					if (npfSpfNums[npfSpf] > max) {
+						max = npfSpfNums[npfSpf];
+						maxShortNpfSpf = npfSpf;
+					}
+				}
+
+				console.log("winner", maxShortNpfSpf)
+
+				//put thw winner to the dict, fix rest npfRivals
+				var maxShortNpf = maxShortNpfSpf.split(" ")[0],
+					maxShortSpfs = maxShortNpfSpf.split(" ").slice(1).join(" ");
+				words[maxShortNpf] = maxShortSpfs;
+
+				//fix rest of npfRivals, delete winner npfRivals				
+				for (var nForm in npfRivals){
+					if (nForm.slice(1) === maxShortNpf && unprefixize(npfRivals[nForm], 1) === maxShortSpfs) {
+						//delete winner
+						delete words[nForm];
+					} else {
+						//freeze loosers
+						results[nForm] = npfRivals[nForm];
+						delete words[nForm]
+					}
+				}
+			}
+			console.log("eat result", words)
+			console.groupEnd();
+		}
+
+		console.groupEnd();
+	}
+	console.log("Resolve result", results)
+	return results;
 }
 
 
-testCorrectness(pfDict);
-
-console.log("Uncompressed " + Object.getOwnPropertyNames(pfDict).length + " rules")
-shrinkPostfixes(pfDict);
-cleanEmptyPfs(pfDict);
-
-console.log("Compressed " + Object.getOwnPropertyNames(pfDict).length + " rules")
-testCorrectness(pfDict)
-
-var postfixes = getPostfixes(pfDict);
-//console.log("Result", postfixes)
-var pfs = Object.getOwnPropertyNames(postfixes).sort(function(a,b){return b.length - a.length});
-var res = "{\n";
-for (var i = 0; i < pfs.length; i++){
-	res += "\"" + pfs[i] + "\": \"" + postfixes[pfs[i]] + "\"" + ",\n"
-}
-res += "\n}"
-console.log(res)
 
 
 //---------------------- Correctness test
 
-function testCorrectness(pfDict){
+function testCorrectness(postfixes){
 	//form postfixes table
-	var postfixes = getPostfixes(pfDict)
-	//console.log("Test " + Object.getOwnPropertyNames(postfixes).length + " postfixes:", postfixes)
+	//var postfixes = getPostfixes(pfDict)
+	console.log("Test " + Object.getOwnPropertyNames(postfixes).length + " postfixes:", postfixes)
 
 	for (var nForm in source){
 		var patr = patrName(nForm, postfixes);
 		if (patr === source[nForm]){
 			//console.log(nForm, patr)
 		} else {
-			return console.error("Incorrect: `" + nForm + " " + patr + "`, but source: `" + source[nForm] + "`")		
+			console.error("Incorrect: `" + nForm + " " + patr + "`, but source: `" + nForm + " " + source[nForm] + "`")
+			for (var i = nForm.length; i >= 0; i--){
+				var pf = nForm.slice(nForm.length - i, nForm.length);
+				if (postfixes[pf]){
+					console.log("postfix: " + pf + " " + postfixes[pf], " prefixized: " + prefixize(postfixes[pf], nForm.slice(0, nForm.length - i)))
+					prefixize(postfixes[pf], nForm.slice(0, nForm.length - i))
+					break;
+				}
+			}
+			return;		
 		}
 	}
 
@@ -476,7 +655,7 @@ function getPostfixes(pfDict){
 }
 
 //main name resolver
-function patrName(nForm, pfDict){
+function patrName(nForm, pfDict, debug){
 	pfDict = pfDict || postfixes;
 	for (var i = nForm.length; i >= 0; i--){
 		var pf = nForm.slice(nForm.length - i, nForm.length);

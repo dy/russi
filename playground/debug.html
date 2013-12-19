@@ -3,5 +3,55 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<script src="../dicts/male-patronimics.js"></script>
+<!--<script src="../dicts/male-patronimics.js"></script>-->
+<script src="../dicts/place-tokens.js"></script>
+
+
 <script src="../src/postfixSchemeBuilder.js"></script>
+
+<script type="text/javascript">
+	var source = {
+"завод": "завода заводу завод заводом заводе",
+"заводское": "заводского заводскому заводское заводским заводском",
+"автозаводский": "автозаводского автозаводскому автозаводского автозаводским автозаводском",
+"автодром": "автодрома автодрому автодром автодромом автодроме",
+"автозаводский": "автозаводского автозаводскому автозаводского автозаводским автозаводском",
+"автокинотеатр": "автокинотеатра автокинотеатру автокинотеатр автокинотеатром автокинотеатре",
+"автомобильный": "автомобильного автомобильныому автомобильный автомобильным автомобильном",
+"авторская": "авторской авторской авторская авторской авторской",
+"авторский": "авторского авторскому авторский авторским авторском",
+	}
+	//------------------ Main call
+
+	//main postfixes table like {"npf": "pf1|pf1 pf2 pf3"}
+	var postfixes = {};
+
+
+	//parse initial source
+	var ambDict = getMinPostfixes(source);
+	console.log("Primary " + Object.getOwnPropertyNames(ambDict).length + " ambiguities", ambDict);
+
+	var resDict = resolveAmbiguities(ambDict, source);
+	testCorrectness(resDict);
+
+	console.log("Uncompressed " + Object.getOwnPropertyNames(resDict).length + " rules")
+	shrinkPostfixes(resDict);
+	cleanEmptyPfs(resDict);
+
+	console.log("Compressed " + Object.getOwnPropertyNames(resDict).length + " rules")
+	//testCorrectness(resDict)
+
+
+	//render json
+	/*
+	var postfixes = getPostfixes(pfDict);
+	//console.log("Result", postfixes)
+	var pfs = Object.getOwnPropertyNames(postfixes).sort(function(a,b){return b.length - a.length});
+	var res = "{\n";
+	for (var i = 0; i < pfs.length; i++){
+		res += "\"" + pfs[i] + "\": \"" + postfixes[pfs[i]] + "\"" + ",\n"
+	}
+	res += "\n}"
+	console.log(res)*/
+
+</script>
