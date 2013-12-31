@@ -16,9 +16,14 @@
 	console.log("Source", Object.getOwnPropertyNames(source).length, source)
 
 	var normalForms = Object.getOwnPropertyNames(source);
+	for (var i = 0; i < normalForms.length; i++){
+		normalForms[i] = normalForms[i].split("").reverse().join('');
+	}
 
 	var trei = new RadixTrei(normalForms)
 	console.log(trei);
-	console.log(trei.getList());
+
+
+	//console.log(trei.getList());
 
 </script>

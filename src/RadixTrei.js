@@ -1,6 +1,6 @@
 //Simplistic radix tree implementation
 function RadixTrei(strList){
-	this.root = new RadixTreiNode(strList[0]);
+	this.root = new RadixTreiNode(strList[0], "", null);
 
 	for (var i = 1; i < strList.length; i++){
 		this.root.addWord(strList[i]);
@@ -37,13 +37,28 @@ RadixTrei.prototype = {
 	//returns full list of possible variants
 	getList: function(){
 		return this.root.getVariants();
+	},
+
+	//returns the most lenght length
+	getMaxLevel: function(){
+		return this.root.maxLen
+	},
+
+	//returns all nodes of specified length
+	getLevelNodes: function(len){
+		return this.root.getLevelNodes(len);
 	}
 
 }
 
 
 //
-function RadixTreiNode(str){
+function RadixTreiNode(str, key, parent){
+	this.isFinal = false;
+	this.prev = parent;
+	this.idx = key;
+	this.basePath = (parent && parent.basePath || "") + this.idx;
+	this.maxLen = 0;
 	this.addWord(str);
 }
 
@@ -55,8 +70,13 @@ RadixTreiNode.prototype = {
 			return;
 		}
 
-		if (!this[str[0]]) this[str[0]] = new RadixTreiNode(str.slice(1));
-		else this[str[0]].addWord(str.slice(1))
+		if (this.maxLen < str.length){
+			this.maxLen = str.length;
+		}
+
+		if (!this.symbols) this.symbols = {};
+		if (!this.symbols[str[0]]) this.symbols[str[0]] = new RadixTreiNode(str.slice(1), str[0], this);
+		else this.symbols[str[0]].addWord(str.slice(1))
 	},
 	
 	//returns variants for that node
@@ -65,18 +85,28 @@ RadixTreiNode.prototype = {
 
 		if (this.isFinal) results.push("");
 
-		for (var sym in this){
-			if (!this.hasOwnProperty(sym)) continue;
-			if (sym === "isFinal") continue;
-
-			if (this[sym] instanceof RadixTreiNode){
-				var subResults = this[sym].getVariants();
+		for (var sym in this.symbols){
+			if (this.symbols[sym] instanceof RadixTreiNode){
+				var subResults = this.symbols[sym].getVariants();
 				for (var i = 0; i < subResults.length; i++){
 					results.push(sym + subResults[i]);
 				}
 			}
 		}
 		return results;
+	},
+
+	//returns all nodes of level, starting from this as 0 level
+	getLevelNodes: function(level){
+		if (level === 0 || !this.symbols || Object.getOwnPropertyNames(this.symbols).length === 0){
+			return [this];
+		} else {
+			var results = [];
+			for (var sym in this.symbols){
+				results = results.concat(this.symbols[sym].getLevelNodes(level - 1))
+			}
+			return results;
+		}
 	},
 
 	//whether node contains str

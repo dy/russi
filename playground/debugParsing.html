@@ -3,37 +3,51 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<!--<script src="../dicts/male-patronimics.js"></script>-->
-<script src="../dicts/place-tokens.js"></script>
+<script src="../dicts/male-patronimics.js"></script>
+<!--<script src="../dicts/place-tokens.js"></script>-->
 
-<!--<script src="../src/postfixSchemeBuilder.js"></script>-->
+<script src="../src/postfixSchemeBuilder.js"></script>
 
 <script src="../src/RadixTrei.js"></script>
 
 <script type="text/javascript">
 	/*var source = {
-		"александровский": "александровского александровскому александровский александровским александровском",
-		"михайловский": "михайловского михайловскому михайловский михайловским михайлоском",
+		//"александровский": "александровского александровскому александровский александровским александровском",
+		//"михайловский": "михайловского михайловскому михайловский михайловским михайлоском",
+		
+		//level competition
+		"Онуфрий": "Онуфриевич Онуфриевна",
+		"Георгий": "Георгиевич Георгиевна",
+		"Арий": "Ариевич|Арьевич Ариевна|Арьевна",
+		"Афанасий": "Афанасиевич|Афанасьевич Афанасиевна|Афанасьевна",
+		"Власий": "Власиевич|Власьевич Власиевна|Власьевна",
+		"Кандидий": "Кандидиевич|Кандидьевич Кандидиевна|Кандидьевна",
+	
+		//level interference
+		"Авдей": "Авдеевич Авдеевна",
+		"Авдий": "Авдиевич Авдиевна",
+		"Федотий": "Федотиевич|Федотьевич Федотиевна|Федотьевна",
+		"Флорентий": "Флорентиевич|Флорентьевич Флорентиевна|Флорентьевна",
+
+		//full form closing
+		//besides, there is a case where the longer word has been included to a shorter group, when the shorter word can’t specify itself more than the longer group. In that case - add word boundary to specify shorten word
+		"Милий": "Милиевич Милиевна",
+		"Эмилий": "Эмилиевич|Эмильевич Эмилиевна|Эмильевна",
 	}*/
-	//------------------ Main call
 
-	//main postfixes table like {"npf": "pf1|pf1 pf2 pf3"}
-	var postfixes = {};
+	console.log("Source", Object.getOwnPropertyNames(source).length, source)
+	
+	//lower case
+	var src = {};
+	for (var w in source){
+		src[w.toLowerCase()] = source[w].toLowerCase();
+	}
 
+	var resDict = resolve(src);
+	testCorrectness(resDict, src);
 
-	//parse initial source
-	//var ambDict = getMinPostfixes(source);
-	//console.log("Primary " + Object.getOwnPropertyNames(ambDict).length + " ambiguities", ambDict);
-
-	var resDict = resolveWords(source);
-	testCorrectness(resDict);
-
-	console.log("Uncompressed " + Object.getOwnPropertyNames(resDict).length + " rules")
-	shrinkPostfixes(resDict);
-	cleanEmptyPfs(resDict);
-
-	console.log("Compressed " + Object.getOwnPropertyNames(resDict).length + " rules")
-	testCorrectness(resDict)
+	//shrinkPostfixes(resDict)
+	//testCorrectness(resDict, src);
 
 
 	//render json
