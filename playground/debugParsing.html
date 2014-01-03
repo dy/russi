@@ -6,60 +6,58 @@
 <script src="../dicts/male-patronimics.js"></script>
 <!--<script src="../dicts/place-tokens.js"></script>-->
 
-<script src="../src/postfixSchemeBuilder.js"></script>
-
 <script src="../src/RadixTrei.js"></script>
+<script src="../src/Ru.js"></script>
+<script src="../src/util.js"></script>
+<script src="../src/endingSchemeBuilder.js"></script>
+
 
 <script type="text/javascript">
-	/*var source = {
+	/*var source = [
 		//"александровский": "александровского александровскому александровский александровским александровском",
 		//"михайловский": "михайловского михайловскому михайловский михайловским михайлоском",
 		
 		//level competition
-		"Онуфрий": "Онуфриевич Онуфриевна",
-		"Георгий": "Георгиевич Георгиевна",
-		"Арий": "Ариевич|Арьевич Ариевна|Арьевна",
-		"Афанасий": "Афанасиевич|Афанасьевич Афанасиевна|Афанасьевна",
-		"Власий": "Власиевич|Власьевич Власиевна|Власьевна",
-		"Кандидий": "Кандидиевич|Кандидьевич Кандидиевна|Кандидьевна",
+		"Онуфрий Онуфриевич Онуфриевна",
+		"Георгий Георгиевич Георгиевна",
+		"Арий Ариевич|Арьевич Ариевна|Арьевна",
+		"Афанасий Афанасиевич|Афанасьевич Афанасиевна|Афанасьевна",
+		"Власий Власиевич|Власьевич Власиевна|Власьевна",
+		"Кандидий Кандидиевич|Кандидьевич Кандидиевна|Кандидьевна",
 	
 		//level interference
-		"Авдей": "Авдеевич Авдеевна",
-		"Авдий": "Авдиевич Авдиевна",
-		"Федотий": "Федотиевич|Федотьевич Федотиевна|Федотьевна",
-		"Флорентий": "Флорентиевич|Флорентьевич Флорентиевна|Флорентьевна",
+		"Авдей Авдеевич Авдеевна",
+		"Авдий Авдиевич Авдиевна",
+		"Федотий Федотиевич|Федотьевич Федотиевна|Федотьевна",
+		"Флорентий Флорентиевич|Флорентьевич Флорентиевна|Флорентьевна",
 
 		//full form closing
 		//besides, there is a case where the longer word has been included to a shorter group, when the shorter word can’t specify itself more than the longer group. In that case - add word boundary to specify shorten word
-		"Милий": "Милиевич Милиевна",
-		"Эмилий": "Эмилиевич|Эмильевич Эмилиевна|Эмильевна",
-	}*/
+		"Милий Милиевич Милиевна",
+		"Эмилий Эмилиевич|Эмильевич Эмилиевна|Эмильевна",
+	]*/
 
-	console.log("Source", Object.getOwnPropertyNames(source).length, source)
+	console.log("Source", source.length)
 	
 	//lower case
-	var src = {};
-	for (var w in source){
-		src[w.toLowerCase()] = source[w].toLowerCase();
+	for (var i = 0; i < source.length; i++){
+		source[i] = source[i].toLowerCase();
 	}
 
-	var resDict = resolve(src);
-	testCorrectness(resDict, src);
 
-	//shrinkPostfixes(resDict)
-	//testCorrectness(resDict, src);
+	var suffixes = getEndingScheme(source, 0);
+	var genSuffixes = generalizeScheme(suffixes, source, Ru);
 
+	testCorrectness(suffixes, source, Ru, 0);
+	testCorrectness(genSuffixes, source, Ru);
 
 	//render json
-	/*
-	var postfixes = getPostfixes(pfDict);
-	//console.log("Result", postfixes)
-	var pfs = Object.getOwnPropertyNames(postfixes).sort(function(a,b){return b.length - a.length});
+	/*var pfs = Object.getOwnPropertyNames(suffixes).sort(function(a,b){return b.length - a.length});
 	var res = "{\n";
 	for (var i = 0; i < pfs.length; i++){
-		res += "\"" + pfs[i] + "\": \"" + postfixes[pfs[i]] + "\"" + ",\n"
+		res += "\"" + pfs[i] + "\": \"" + suffixes[pfs[i]] + "\"" + ",\n"
 	}
-	res += "\n}"
+	res = res.slice(0, -2) + "\n}"
 	console.log(res)*/
 
 </script>
