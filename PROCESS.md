@@ -9,6 +9,9 @@
 	russian.patrName()
 	russian.noun()|patronize
 	russian.noun("середнячек")|case("genitive")
+* russi.js
+	russi.patronize(str, male)
+	russi.
 
 ## Suffix builder
 

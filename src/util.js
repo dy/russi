@@ -3,7 +3,7 @@ var wordBoundary = ">"
 
 
 //return forms for the normal form from the suffix dictionary
-function getForms(nForm, suffixDict, lang){
+function getForms(nForm, suffixDict, lang) {
 	var nFormAlts = nForm.split("|");
 
 	for (var a = 0; a < nFormAlts.length; a++){
@@ -24,43 +24,31 @@ function getForms(nForm, suffixDict, lang){
 			}
 
 			//try every possible generalized combination, from less general to more general
-			//TODO: very heavy operation
-			/*var genSuffixes = getGeneralizedSuffixes(suffix, lang)
-
-			for (var j = 0; j < genSuffixes.length; j++){
-				var genSuffix = genSuffixes[j];
-				if (suffixDict[genSuffix]){
-					return prefixize(suffixDict[genSuffix], nFormAlt.slice(0, nFormAlt.length - i));
+			var genSfx = suffix,
+				prevGenSfx = "";
+			while (genSfx !== prevGenSfx){
+				prevGenSfx = genSfx;
+				genSfx = generalize(suffix, lang);
+				if (suffixDict[genSfx]){
+					var result = suffixDict[genSfx];
+					//TODO: replace generalizations in result
+					//TODO: replace \1, \2, ... references in result
+					return prefixize(result, nFormAlt.slice(0, nFormAlt.length - i))
 				}
-			}*/
+			}
 		}
 	}
 }
-	
-//return generalized forms of a string, like "ай" → ["αй", "αβ", "аβ", "αβ", ...] 
-function getGeneralizedSuffixes(str, lang){
-	if (!str) return [str];
 
-	var first = str[0],
-		short = str.slice(1);
-	var variants = [];
-	var groups = lang.letterGroups[first];
-	var shortenVariants = getGeneralizedSuffixes(str.slice(1), lang);
-
-	for (var i = 0; i < groups.length; i++){
-		for (var j = 0; j < shortenVariants.length; j++){
-			variants.push(groups[i] + shortenVariants[j]);
-		}
-	}
-
-	return variants;
-}
-
-//return generalized letter (sequential, like ай → αй → αβ)
+//return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
 function generalize(str, lang){
 	if (!str) return "";
 
-	return (lang.letterGroups[str[0]] && lang.letterGroups[str[0]][0] || str[0]) + str.slice(1);
+	//increase first symbol gen group, if possible
+	if (lang.genGroups[str[0]]) return lang.genGroups[str[0]] + str.slice(1);
+
+	//and if it’s reached maximum already - increase next one's group
+	return str[0] + generalize(str.slice(1), lang);
 }
 
 

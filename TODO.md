@@ -15,3 +15,5 @@
 * Make diminutor with extensibility (уменьшитель-ласкатор) Лапа - Лапка - Лапочка - Лапуля - Лапулечка - Лапулечечка - Лапомпулечка - Лапомпенок - Лапуша - Лапушок - Лапушка - Лапонченок
 
 * Invent the intellectual machine of getting short names (Анна → Аня, Георгий → Жора, ...)
+
+* Automatic accents setter

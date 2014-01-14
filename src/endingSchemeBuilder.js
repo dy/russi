@@ -80,7 +80,8 @@ function getEndingScheme(formsSource, nFormNumber){
 	return result;
 }
 
-var debug = false;
+//debug details: 0, 1, 2
+var debug = 0;
 function resolveNode(node, result, reversedNfs, resultWords, source){
 	var sym = node.idx;
 
@@ -95,7 +96,7 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 	//if no more words left - skip nested iterations
 	if (!levelWords.length || !reversedNfs.length) {
-		debug && console.log("resolve node `" + node.basePath + "`: none words")
+		debug === 2 && console.log("resolve node `" + node.basePath + "`: none words")
 		return false;
 	}
 
@@ -112,20 +113,20 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 		var minNpf = reverse(getMinNpf(reverse(word), source[reverse(word)])),
 			minSpfs = prefixize(getMinSpfs(reverse(word), source[reverse(word)]), reverse(node.basePath.slice(minNpf.length)));
 
-		debug && console.group("test word", word, minSpfs, "resultWords:", resultWords)
+		debug === 2 && console.group("test word", word, minSpfs, "resultWords:", resultWords)
 
 
 		//if min form hasn’t met - pass over
 		if (minNpf !== node.basePath.slice(0, minNpf.length)){
-			debug && console.log("is not min form")
-			debug && console.groupEnd();
+			debug === 2 && console.log("is not min form")
+			debug === 2 && console.groupEnd();
 			continue;
 		}
 
 		//if word is final - exclude it
 		if (node.isFinal && source[word]){
-			debug && console.log("final word reached")
-			debug && console.groupEnd();
+			debug === 2 && console.log("final word reached")
+			debug === 2 && console.groupEnd();
 			result[reverse(node.basePath)] = source[reverse(word)];
 			reversedNfs.splice(reversedNfs.indexOf(word), 1);
 			resultWords[word] = source[word];
@@ -141,13 +142,13 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 			}
 		}
 		if (interferes) {
-			debug && console.log("interferes with prevs", prevRivals)
-			//debug && console.groupEnd()
+			debug === 2 && console.log("interferes with prevs")
+			//debug === 2 && console.groupEnd()
 		}
 
 		//if word is final - add word-boundary symbol
 		if (word === node.basePath) {
-			debug && console.log("whole word found") && console.groupEnd();
+			debug === 2 && console.log("whole word found") && console.groupEnd();
 			result[wordBoundary + reverse(word)] = source[reverse(word)];
 			reversedNfs.splice(reversedNfs.indexOf(word), 1);
 			resultWords[word] = source[word];
@@ -157,9 +158,9 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 		//if word is not final - find possible forms variants, pick the most probable one, exclude it
 		if (!rivals[minSpfs]) rivals[minSpfs] = [];
 		rivals[minSpfs].push(word);
-		debug && console.log("rival found", word)
+		debug === 2 && console.log("rival found", word)
 
-		debug && console.groupEnd();
+		debug === 2 && console.groupEnd();
 	}
 
 	//resolve one-level competition
@@ -168,10 +169,9 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 	//extend rivals with possible prev-level winners
 
 	//find winner
-	//TODO: also compare rivals with prev rivals below and remove prev level winners, if needed
 	var isPrevRival = false;
 	if (rivalVariants.length !== 0 || isPrevInterference){
-		debug && console.group("Rivals competition (rival, prevRivals)", rivals, prevRivals)
+		debug && console.group("Rivals competition (rival, prevRivals)", debug === 2 && rivals, debug === 2 && prevRivals)
 
 		//pick the most frequent rival
 		var max = 0, maxSpf= "";
@@ -184,10 +184,13 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 		if (isPrevInterference) {
 			//collect prev rivals
+			//there may be only one word from prev level which interferes with a lot of words wrom the new level
+			//that is why I have to calculate number of prev rivals overlapped by the current level
 			var resultWordsList = Object.getOwnPropertyNames(resultWords),
 				prevBasePath = node.basePath.slice(0, node.basePath.length - 1);
 			for (var k = 0; k < resultWordsList.length; k++){
-				if (resultWordsList[k].slice(0, node.basePath.length - 1) === prevBasePath) {
+				//I have to pick all prev rivals having exact ending as current basepath
+				if (resultWordsList[k].slice(0, node.basePath.length) === node.basePath) {
 					//Compare prev rivals not only of the current base form, but of the other forms also: ий → [еи]й
 					prevRivals.push(resultWordsList[k]);
 				}
@@ -202,10 +205,10 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 			if (isPrevRival) {
 				//if prev is more frequent than current level - ignore current, as they just interferes with prev
-				debug && console.log("Prev rival wins")
+				debug === 2 && console.log("Prev rival wins")
 			} else {
 				//if no winner in prevRivals - exclude all prev rivals
-				debug && console.log("Prev rival looses")
+				debug === 2 && console.log("Prev rival looses")
 				// Stupid deleting prev guys-loosers
 				/*delete result[reverse(node.basePath).slice(1)];
 				for (var k = prevRivals.length; k--;){
@@ -215,7 +218,7 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 					delete resultWords[prevRivals[k]];
 				}*/
 				
-				//The correct way: keep max level guys, if interference found - specialize guys from prev level, who're overlapped with current level guys
+				//The correct way: keep max level guys, if interference found - specialize guys from prev level, which're overlapped with the current level guys
 				for (var k = prevRivals.length; k--;){
 					if (prevRivals[k].slice(0, node.basePath.length) === node.basePath){
 						//console.log("overlapped rival:", prevRivals[k])
@@ -228,12 +231,12 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 				//exclude max rival
 				result[reverse(node.basePath)] = maxSpf;
 				while (rivals[maxSpf].length > 0){
-					debug && console.log("add", rivals[maxSpf][0] )
+					debug === 2 && console.log("add", rivals[maxSpf][0] )
 					reversedNfs.splice(reversedNfs.indexOf(rivals[maxSpf][0]), 1);
 					resultWords[rivals[maxSpf][0]] = maxSpf;
 					rivals[maxSpf].shift();
 				}
-				debug && console.log("result", result)
+				debug === 2 && console.log("result", result)
 			}
 		} else {
 			//exclude max rival
@@ -322,6 +325,7 @@ function reverse(str){
 //returns generalized scheme of suffixes, based on lang file passed
 //common problem of suffixes object is a plentitude of exceptional suffixes, and small number of generic suffixes
 //goal is to get minimal diverse suffixes scheme
+//also it is more accurately supposes similar-endings suffixes, like ре ×→ реович (non-general ending) → ревич (general ending)
 function generalizeScheme(suffixes, source, lang){
 	var result = {};
 
@@ -336,9 +340,16 @@ function generalizeScheme(suffixes, source, lang){
 		//console.log(suffix)
 		for (var j = 0; j < source.length; j++){
 			var word = source[j].split(" ")[0];
+			var wordAlts = word.split("|");
 			//console.log(word)
-			if (!wordSuffs[word] && 
-				(word.slice(-suffix.length) === suffix || suffix.length === 0 || (suffix[0] === wordBoundary && suffix.slice(1) === word))){
+			if ((!wordSuffs[wordAlts[0]]) && 
+				(
+					((wordAlts[0] && wordAlts[0].slice(-suffix.length) === suffix) || 
+					(wordAlts[1] && wordAlts[1].slice(-suffix.length) === suffix)) || 
+					suffix.length === 0 || 
+					(suffix[0] === wordBoundary && (suffix.slice(1) === wordAlts[0] || suffix.slice(1) === wordAlts[1]))
+				)
+			){
 				suffWords[suffix] = (suffWords[suffix] || [])
 				suffWords[suffix].push(source[j]);
 				wordSuffs[word] = suffix + " " + suffixes[suffix];
@@ -355,7 +366,8 @@ function generalizeScheme(suffixes, source, lang){
 	for (var len = 0; len <= suffixesList[0].length; len++){
 		var levelSfxForms = {},
 			levelGenForms = {};
-		//2. try to generalize level
+
+		//2. try to generalize level (level === sfxs of a specific length)
 
 		//collect level forms
 		for (var j = 0; j < suffixesList.length; j++){
@@ -367,17 +379,32 @@ function generalizeScheme(suffixes, source, lang){
 		console.group("Level " + len, levelSfxForms)
 
 		//get sorted by desc popularity sfxList
-		var sfxList = Object.getOwnPropertyNames(levelSfxForms).sort(function(a, b){ return suffWords[b].length - suffWords[a].length})
+		var sfxList = Object.getOwnPropertyNames(levelSfxForms).sort(function(a, b){ if (!suffWords[b] || !suffWords[a]) console.log(b,a); return suffWords[b].length - suffWords[a].length})
 		console.log(sfxList);
 
 		//generalize level
 		for (var i = 0; i < sfxList.length; i++){
 			var sfx = sfxList[i];
 
+			//collect prev levels words for the sfx
+			var prevLevelWords = [];
+			/*for (var j = 1; j <= sfx.length; j++){
+				var shortSfx = sfx.slice(j);
+				if (suffWords[shortSfx]){
+					prevLevelWords = prevLevelWords.concat(suffWords[shortSfx])
+				}
+			}*/
+
 			//generalize sfx (first letter)
 			console.log(sfx + "→")
-			var generalizedSfx = generalize(sfx, lang);
-			console.log("\t" + generalizedSfx)
+			//console.log(prevLevelWords)
+
+			//generalize to the maximum possible extent (neither overlapping any prev level(s) word nor current level word)
+			var genSfx = generalize(sfx, lang);
+			//while (!interferes(genSfx, prevLevelWords, lang)){
+			//	genSfx = generalize(genSfx, lang);
+			//}
+			console.log("\t" + genSfx)
 
 			//cope with other level suffixes
 			var hasMerged = false;
@@ -385,12 +412,20 @@ function generalizeScheme(suffixes, source, lang){
 			for (var otherSfx in levelSfxForms){
 				if (otherSfx === sfx) continue;
 
-				//merge obvious forms; delete from the source, add to the result
-				if (levelSfxForms[sfx] === levelSfxForms[otherSfx] && generalize(otherSfx, lang) === generalizedSfx){
-					console.log("merge", sfx, otherSfx, "as " + generalizedSfx)
-					levelGenForms[generalizedSfx] = levelSfxForms[sfx];
+				//TODO: merge obvious forms (ай == евич, ой == евич); delete from the source, add to the result
+				if (levelSfxForms[sfx] === levelSfxForms[otherSfx] && generalize(otherSfx, lang) === genSfx){
+					console.log("merge", sfx, otherSfx, "as " + genSfx)
+					levelGenForms[genSfx] = levelSfxForms[sfx];
 					hasMerged = true;
 				}
+
+				//TODO: merge changeable forms (ций → киевич, вий → виевич ⇒ Cий → Cиевич)
+				/*if (levelSfxForms[sfx].slice(1) === levelSfxForms[otherSfx].slice(1)
+					&& generalize(otherSfx, lang) === genSfx
+					&& generalize(levelSfxForms[sfx], lang) === generalize(levelSfxForms[otherSfx], lang)) {
+					levelGenForms[genSfx] = generalize(levelSfxForms[sfx], lang);
+					hasMerged = true;
+				}*/
 			}
 
 			//keep generalized, if non-contradicts to anyone
