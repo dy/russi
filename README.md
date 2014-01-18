@@ -1,2 +1,4 @@
-A list of language tools
+A set of russian language tools:
 
+* patronimic builder
+* 

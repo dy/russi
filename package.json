@@ -1,26 +1,24 @@
 {
-	"name": "language",
+	"name": "rus",
 	"version": "0.0.1",
-	"description": "Generate random schema.org-based data, populate RegExps, swig/django-like template system, sentences generator and more",
-	"homepage": "http://github.com/dfcreative/imagine.js",
-	"keywords": ["faker", "data", "content", "generator"],
+	"description": "Russian language natural methods",
+	"homepage": "http://github.com/dfcreative/rus.js",
+	"keywords": ["transliterate", "syntax", "NLP", "humanize"],
 	"author": {
 		"name": "Dmitry",
 		"email": "df.creative@gmail.com",
-		"url": "http://dfcreative.github.com/project/imagine-js/"
+		"url": "http://dfcreative.github.com/project/rus-js/"
 	},
 	"licenses": [{
-		"type":"MIT",
-		"url":"http://github.com/tstone/gradient-js/blog/master/MIT.LICENSE"
+		"type": "MIT"
 	}],
 	"repository": {
 		"type": "git",
-		"url": "http://github.com/dfcreative/imagine.js.git",
-		"web": "http://github.com/dfcreative/imagine.js"
+		"url": "http://github.com/dfcreative/rus.js.git",
+		"web": "http://github.com/dfcreative/rus.js"
 	},
 
-
-	"main": "Gruntfile.js",
+	"main": "gruntfile.js",
 	"scripts": {
 		"test": "grunt test"
 	},
@@ -31,11 +29,12 @@
 		"grunt-contrib-concat": "~0.2.0",
 		"grunt-contrib-uglify": "~0.2.4",
 		"grunt-closure-compiler": ">0.0.20",
+		"grunt-contrib-watch": ">0.0.1",
 		"grunt-homemade": "~0.2.2"
 	},
 	"peerDependencies": {
 		"grunt": "~0.4.1"
 	},
 
-	"engines": [ "node >= 0.4"]
+	"engines": ["node >= 0.4"]
 }

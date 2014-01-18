@@ -3,16 +3,14 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<script src="../dicts/male-patronimics.js"></script>
-<!--<script src="../dicts/place-tokens.js"></script>-->
+<script src="../rus.js"></script>
 
 <script src="../src/RadixTrei.js"></script>
-<script src="../src/Ru.js"></script>
-<script src="../src/util.js"></script>
 <script src="../src/endingSchemeBuilder.js"></script>
 
 
 <script type="text/javascript">
+	var source = rus.patronimics;
 	/*var source = [
 		//"александровский": "александровского александровскому александровский александровским александровском",
 		//"михайловский": "михайловского михайловскому михайловский михайловским михайлоском",
@@ -46,10 +44,13 @@
 
 
 	var suffixes = getEndingScheme(source, 0);
-	var genSuffixes = generalizeScheme(suffixes, source, Ru);
+	//var genSuffixes = generalizeScheme(suffixes, source, rus);
 
-	testCorrectness(suffixes, source, Ru, 0);
-	testCorrectness(genSuffixes, source, Ru);
+	testCorrectness(suffixes, source, rus, 0);
+	console.log("qty: " + estimateQuality(source, rus, 0));
+
+	//testCorrectness(genSuffixes, source, rus);
+	//console.log("qty: " + estimateSchemeQuality(genSuffixes, source, rus, 0));
 
 	//render json
 	/*var pfs = Object.getOwnPropertyNames(suffixes).sort(function(a,b){return b.length - a.length});

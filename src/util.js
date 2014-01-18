@@ -24,11 +24,8 @@ function getForms(nForm, suffixDict, lang) {
 			}
 
 			//try every possible generalized combination, from less general to more general
-			var genSfx = suffix,
-				prevGenSfx = "";
-			while (genSfx !== prevGenSfx){
-				prevGenSfx = genSfx;
-				genSfx = generalize(suffix, lang);
+			var genSfx = suffix;
+			while ((genSfx = generalize(genSfx, lang)) !== false){
 				if (suffixDict[genSfx]){
 					var result = suffixDict[genSfx];
 					//TODO: replace generalizations in result
@@ -44,13 +41,70 @@ function getForms(nForm, suffixDict, lang) {
 function generalize(str, lang){
 	if (!str) return "";
 
+	if (str.length === 1 && !lang.genGroups[str[0]]) return false;
+
 	//increase first symbol gen group, if possible
 	if (lang.genGroups[str[0]]) return lang.genGroups[str[0]] + str.slice(1);
 
 	//and if it’s reached maximum already - increase next one's group
-	return str[0] + generalize(str.slice(1), lang);
+	var nextGen = generalize(str.slice(1), lang);
+	if (nextGen === false) return false;
+
+	var result = str[0] + nextGen;
+
+	return result;
 }
 
+//tests whether genStr is general form of str 
+function isGeneralOf(targetGenStr, str, lang){
+	var genStr = str;
+
+	if (targetGenStr === str) return true;
+
+	while ((genStr = generalize(genStr, lang)) !== false){
+		if (genStr === targetGenStr) return true;
+	}
+	return false;
+}
+
+//tests whether at least one normal form of word from the list is covered by the generalized suffix passed
+//return number of words having suffix
+function hasSuffix(list, genSfx, lang){
+	if (genSfx === "") return list.length;
+	if (!genSfx) return 0;
+
+	var num = 0;
+
+	for (var i = 0; i < list.length; i++){
+		var wordAlts = list[i].split(" ")[0].split("|");
+		for (var a = 0; a < wordAlts.length; a++){
+			var word = wordAlts[a];
+			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+				num++
+			}
+		}
+	}
+
+	return num;
+}
+
+//returns idx of sfx in list
+function indexOfSuffix(list, genSfx, lang){
+	if (genSfx === "") return 0;
+	if (!genSfx) return -1;
+
+	for (var i = 0; i < list.length; i++){
+		var wordAlts = list[i].split(" ")[0].split("|");
+		for (var a = 0; a < wordAlts.length; a++){
+			var word = wordAlts[a];
+			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
 
 //gets "ович овна|евна", returns "рович ровна|ревна"
 function prefixize(forms, prefix){

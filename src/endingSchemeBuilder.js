@@ -1,33 +1,33 @@
 /**
-* Builds a table of suffixes, or endings, based on a table of forms passed.
-* It’s simplistic and effective replacement for educative algorithms magic or routines of linguists.
-* Useful for languages with suffixes, like russian.
-*
-* Supposed that variable @source is already defined before that script.
-* Source is a JSON object of format "normal form": ["form1|formAlt1 form2 form3 ..."]
-*
-* It is once in lifetime launched procedure.
-*
-* Terms
-* npf - normal postfix form (ий)
-* spf - special postfix form (иевич иевна)
-* normalForm - of word
-* specialForm - of word
-*/
+ * Builds a table of suffixes, or endings, based on a table of forms passed.
+ * It’s simplistic and effective replacement for educative algorithms magic or routines of linguists.
+ * Useful for languages with suffixes, like russian.
+ *
+ * Supposed that variable @source is already defined before that script.
+ * Source is a JSON object of format "normal form": ["form1|formAlt1 form2 form3 ..."]
+ *
+ * It is once in lifetime launched procedure.
+ *
+ * Terms
+ * npf - normal postfix form (ий)
+ * spf - special postfix form (иевич иевна)
+ * normalForm - of word
+ * specialForm - of word
+ */
 
 /**
-* A tree-way word forms table resolutor.
-* Builds radix tree from the end of normal forms of the words.
-* Goes by branches of the tree, excludes minimal forms from the set, if possible.
-* First form is always a normal form: 
-* a) it can’t have alternatives
-* b) generalizations can change the normal form only, not the rest forms - they’re supposed to be persistent
-* 
-* @param formsSource is array of space-separated word forms, like ["nf f1 f2", "nf f1|f1a f2", ...]
-* @param nFormsNumber points the normal form of word (having no alternatives)
-* @param genGroups - dict of groups of symbols to make generalizations, like {v: "аеёийоуыэюя"}
-*/
-function getEndingScheme(formsSource, nFormNumber){
+ * A tree-way word forms table resolutor.
+ * Builds radix tree from the end of normal forms of the words.
+ * Goes by branches of the tree, excludes minimal forms from the set, if possible.
+ * First form is always a normal form:
+ * a) it can’t have alternatives
+ * b) generalizations can change the normal form only, not the rest forms - they’re supposed to be persistent
+ *
+ * @param formsSource is array of space-separated word forms, like ["nf f1 f2", "nf f1|f1a f2", ...]
+ * @param nFormsNumber points the normal form of word (having no alternatives)
+ * @param genGroups - dict of groups of symbols to make generalizations, like {v: "аеёийоуыэюя"}
+ */
+function getEndingScheme(formsSource, nFormNumber) {
 
 	if (!formsSource || !formsSource.length) return console.error("No formsSource passed")
 
@@ -38,22 +38,22 @@ function getEndingScheme(formsSource, nFormNumber){
 
 	//get normal-form-keyed object
 	var source = {};
-	for (var i = 0; i < formsSource.length; i++){
+	for (var i = 0; i < formsSource.length; i++) {
 		var forms = formsSource[i].split(" "),
 			nForm = forms[nFormNumber];
 
 		forms.splice(nFormNumber, 1);
 
 		var nFormAlts = nForm.split("|");
-		for (var a = 0; a < nFormAlts.length; a++){
+		for (var a = 0; a < nFormAlts.length; a++) {
 			source[nFormAlts[a]] = forms.join(" ");
 		}
 
 	}
-	
+
 	//reverse words and words-source to exclude at the same time
 	var reversedNfs = Object.getOwnPropertyNames(source);
-	for (var i = 0; i < reversedNfs.length; i++){
+	for (var i = 0; i < reversedNfs.length; i++) {
 		reversedNfs[i] = reverse(reversedNfs[i]);
 	}
 
@@ -66,13 +66,13 @@ function getEndingScheme(formsSource, nFormNumber){
 	var resultWords = {};
 
 	var maxLevel = tree.getMaxLevel();
-	for(var level = 0; level <= maxLevel; level++){
+	for (var level = 0; level <= maxLevel; level++) {
 		var levelNodes = tree.getLevelNodes(level);
 		//console.log("level", level, levelNodes, reversedNfs)
-		if (!reversedNfs.length) break;	
-			
-		for (var i = 0; i < levelNodes.length; i++){
-			resolveNode(levelNodes[i], result, reversedNfs, resultWords, source);			
+		if (!reversedNfs.length) break;
+
+		for (var i = 0; i < levelNodes.length; i++) {
+			resolveNode(levelNodes[i], result, reversedNfs, resultWords, source);
 		}
 	}
 	debug && console.log("Tree resolution result", result)
@@ -82,14 +82,15 @@ function getEndingScheme(formsSource, nFormNumber){
 
 //debug details: 0, 1, 2
 var debug = 0;
-function resolveNode(node, result, reversedNfs, resultWords, source){
+
+function resolveNode(node, result, reversedNfs, resultWords, source) {
 	var sym = node.idx;
 
 	//get words with that pf
-	var levelWords = []//node.getVariants();
+	var levelWords = [] //node.getVariants();
 
-	for (var i = 0; i < reversedNfs.length; i++){
-		if (node.basePath === reversedNfs[i].slice(0, node.basePath.length)){
+	for (var i = 0; i < reversedNfs.length; i++) {
+		if (node.basePath === reversedNfs[i].slice(0, node.basePath.length)) {
 			levelWords.push(reversedNfs[i]);
 		}
 	}
@@ -102,12 +103,12 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 	debug && console.group("resolve node `" + node.basePath + "`")
 
-	var rivals = {};//{"его им": [...words...], "его ей": [...words...]}}
+	var rivals = {}; //{"его им": [...words...], "его ей": [...words...]}}
 	var prevRivals = []; //words from the prev level (list)
 
 	//for every word left meeting pf
 	var isPrevInterference = false;
-	for (var i = 0; i < levelWords.length; i++){
+	for (var i = 0; i < levelWords.length; i++) {
 		var word = levelWords[i];
 
 		var minNpf = reverse(getMinNpf(reverse(word), source[reverse(word)])),
@@ -117,14 +118,14 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 
 		//if min form hasn’t met - pass over
-		if (minNpf !== node.basePath.slice(0, minNpf.length)){
+		if (minNpf !== node.basePath.slice(0, minNpf.length)) {
 			debug === 2 && console.log("is not min form")
 			debug === 2 && console.groupEnd();
 			continue;
 		}
 
 		//if word is final - exclude it
-		if (node.isFinal && source[word]){
+		if (node.isFinal && source[word]) {
 			debug === 2 && console.log("final word reached")
 			debug === 2 && console.groupEnd();
 			result[reverse(node.basePath)] = source[reverse(word)];
@@ -134,8 +135,9 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 		}
 
 		//if baseform interferes with fixed words - wait til it is expanded
-		var interferes = false, resultWordsList = Object.getOwnPropertyNames(resultWords);
-		for (var k = 0; k < resultWordsList.length; k++){
+		var interferes = false,
+			resultWordsList = Object.getOwnPropertyNames(resultWords);
+		for (var k = 0; k < resultWordsList.length; k++) {
 			if (resultWordsList[k].slice(0, node.basePath.length) === node.basePath) {
 				interferes = true;
 				isPrevInterference = true;
@@ -170,13 +172,14 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 	//find winner
 	var isPrevRival = false;
-	if (rivalVariants.length !== 0 || isPrevInterference){
+	if (rivalVariants.length !== 0 || isPrevInterference) {
 		debug && console.group("Rivals competition (rival, prevRivals)", debug === 2 && rivals, debug === 2 && prevRivals)
 
 		//pick the most frequent rival
-		var max = 0, maxSpf= "";
-		for (var spf in rivals){
-			if (rivals[spf].length > max){
+		var max = 0,
+			maxSpf = "";
+		for (var spf in rivals) {
+			if (rivals[spf].length > max) {
 				max = rivals[spf].length;
 				maxSpf = spf;
 			}
@@ -188,7 +191,7 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 			//that is why I have to calculate number of prev rivals overlapped by the current level
 			var resultWordsList = Object.getOwnPropertyNames(resultWords),
 				prevBasePath = node.basePath.slice(0, node.basePath.length - 1);
-			for (var k = 0; k < resultWordsList.length; k++){
+			for (var k = 0; k < resultWordsList.length; k++) {
 				//I have to pick all prev rivals having exact ending as current basepath
 				if (resultWordsList[k].slice(0, node.basePath.length) === node.basePath) {
 					//Compare prev rivals not only of the current base form, but of the other forms also: ий → [еи]й
@@ -197,8 +200,9 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 			}
 
 			//check for prev rival
-			var prevMax = max, prevMaxSpf = "";
-			if (prevRivals.length >= prevMax){
+			var prevMax = max,
+				prevMaxSpf = "";
+			if (prevRivals.length >= prevMax) {
 				prevMax = prevRivals.length;
 				isPrevRival = true;
 			}
@@ -217,10 +221,10 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 					reversedNfs.push(prevRivals[k])
 					delete resultWords[prevRivals[k]];
 				}*/
-				
+
 				//The correct way: keep max level guys, if interference found - specialize guys from prev level, which're overlapped with the current level guys
-				for (var k = prevRivals.length; k--;){
-					if (prevRivals[k].slice(0, node.basePath.length) === node.basePath){
+				for (var k = prevRivals.length; k--;) {
+					if (prevRivals[k].slice(0, node.basePath.length) === node.basePath) {
 						//console.log("overlapped rival:", prevRivals[k])
 						reversedNfs.push(prevRivals[k])
 						delete resultWords[prevRivals[k]];
@@ -230,8 +234,8 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 				//exclude max rival
 				result[reverse(node.basePath)] = maxSpf;
-				while (rivals[maxSpf].length > 0){
-					debug === 2 && console.log("add", rivals[maxSpf][0] )
+				while (rivals[maxSpf].length > 0) {
+					debug === 2 && console.log("add", rivals[maxSpf][0])
 					reversedNfs.splice(reversedNfs.indexOf(rivals[maxSpf][0]), 1);
 					resultWords[rivals[maxSpf][0]] = maxSpf;
 					rivals[maxSpf].shift();
@@ -241,7 +245,7 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 		} else {
 			//exclude max rival
 			result[reverse(node.basePath)] = maxSpf;
-			while (rivals[maxSpf].length > 0){
+			while (rivals[maxSpf].length > 0) {
 				reversedNfs.splice(reversedNfs.indexOf(rivals[maxSpf][0]), 1);
 				resultWords[rivals[maxSpf][0]] = maxSpf;
 				rivals[maxSpf].shift();
@@ -266,21 +270,21 @@ function resolveNode(node, result, reversedNfs, resultWords, source){
 
 
 
-function getFirstDiffSymbol(baseForm, formsStr){
+function getFirstDiffSymbol(baseForm, formsStr) {
 
 	var forms = formsStr.split(" ");
 
 	var firstDiffSym = baseForm.length;
 
 	//find the most first diff symbol between normal form and list of forms
-	for (var i = 0; i < forms.length; i++){
+	for (var i = 0; i < forms.length; i++) {
 		var form = forms[i];
 		var alternatives = form.split("|");
 
-		for (var a = 0; a < alternatives.length; a++){				
+		for (var a = 0; a < alternatives.length; a++) {
 			//catch first different from normal form symbol
-			for (var s = 0; s < baseForm.length; s++){
-				if (s < firstDiffSym && baseForm[s] !== alternatives[a][s]){
+			for (var s = 0; s < baseForm.length; s++) {
+				if (s < firstDiffSym && baseForm[s] !== alternatives[a][s]) {
 					firstDiffSym = s;
 					break;
 				}
@@ -292,32 +296,32 @@ function getFirstDiffSymbol(baseForm, formsStr){
 }
 
 //returns min npf of nform
-function getMinNpf(baseForm, formsStr){
+function getMinNpf(baseForm, formsStr) {
 	return baseForm.slice(getFirstDiffSymbol(baseForm, formsStr));
 }
 
 //returns min spfs string
-function getMinSpfs(baseForm, formsStr){
+function getMinSpfs(baseForm, formsStr) {
 	var firstDiffSym = getFirstDiffSymbol(baseForm, formsStr);
 
 	var forms = formsStr.split(" "),
 		formsPfs = [];
 
 	//form pf forms
-	for (var i = 0; i < forms.length; i++){
+	for (var i = 0; i < forms.length; i++) {
 		var alts = forms[i].split("|");
 		var result = "";
-		for (var j = 0; j < alts.length; j++){
+		for (var j = 0; j < alts.length; j++) {
 			result += alts[j].slice(firstDiffSym) + "|";
 		}
-		result = result.slice(0,-1);
+		result = result.slice(0, -1);
 
 		formsPfs.push(result);
 	}
 	return formsPfs.join(" ");
 }
 
-function reverse(str){
+function reverse(str) {
 	return str.split("").reverse().join("");
 }
 
@@ -326,33 +330,37 @@ function reverse(str){
 //common problem of suffixes object is a plentitude of exceptional suffixes, and small number of generic suffixes
 //goal is to get minimal diverse suffixes scheme
 //also it is more accurately supposes similar-endings suffixes, like ре ×→ реович (non-general ending) → ревич (general ending)
-function generalizeScheme(suffixes, source, lang){
+function generalizeScheme(suffixes, source, lang) {
 	var result = {};
 
 	var suffixesList = Object.getOwnPropertyNames(suffixes);
-	suffixesList.sort(function(a, b){return b.length - a.length});
-	
+	suffixesList.sort(function(a, b) {
+		return b.length - a.length
+	});
+
 	//distribute words by suffixes
 	var suffWords = {},
 		wordSuffs = {};
-	for (var i = 0; i < suffixesList.length; i++){
+	for (var i = 0; i < suffixesList.length; i++) {
 		var suffix = suffixesList[i];
 		//console.log(suffix)
-		for (var j = 0; j < source.length; j++){
+		for (var j = 0; j < source.length; j++) {
 			var word = source[j].split(" ")[0];
 			var wordAlts = word.split("|");
 			//console.log(word)
-			if ((!wordSuffs[wordAlts[0]]) && 
-				(
-					((wordAlts[0] && wordAlts[0].slice(-suffix.length) === suffix) || 
-					(wordAlts[1] && wordAlts[1].slice(-suffix.length) === suffix)) || 
-					suffix.length === 0 || 
-					(suffix[0] === wordBoundary && (suffix.slice(1) === wordAlts[0] || suffix.slice(1) === wordAlts[1]))
-				)
-			){
-				suffWords[suffix] = (suffWords[suffix] || [])
-				suffWords[suffix].push(source[j]);
-				wordSuffs[word] = suffix + " " + suffixes[suffix];
+			for (var a = 0; a < wordAlts.length; a++) {
+				var wordAlt = wordAlts[a];
+				if (!wordSuffs[wordAlt] &&
+					(
+						wordAlt && wordAlt.slice(-suffix.length) === suffix ||
+						suffix.length === 0 ||
+						(suffix[0] === wordBoundary && (suffix.slice(1) === wordAlt))
+					)
+				) {
+					suffWords[suffix] = (suffWords[suffix] || [])
+					suffWords[suffix].push(source[j]);
+					wordSuffs[wordAlt] = suffix + " " + suffixes[suffix];
+				}
 			}
 		}
 	}
@@ -363,15 +371,15 @@ function generalizeScheme(suffixes, source, lang){
 	//3. shorten lenghten forms, if possible
 
 	//1. go from the end to the beginnig of word (from shorten to lenghten forms)
-	for (var len = 0; len <= suffixesList[0].length; len++){
+	for (var len = 0; len <= suffixesList[0].length; len++) {
 		var levelSfxForms = {},
 			levelGenForms = {};
 
 		//2. try to generalize level (level === sfxs of a specific length)
 
 		//collect level forms
-		for (var j = 0; j < suffixesList.length; j++){
-			if (suffixesList[j].length === len){
+		for (var j = 0; j < suffixesList.length; j++) {
+			if (suffixesList[j].length === len) {
 				levelSfxForms[suffixesList[j]] = suffixes[suffixesList[j]]
 			}
 		}
@@ -379,45 +387,64 @@ function generalizeScheme(suffixes, source, lang){
 		console.group("Level " + len, levelSfxForms)
 
 		//get sorted by desc popularity sfxList
-		var sfxList = Object.getOwnPropertyNames(levelSfxForms).sort(function(a, b){ if (!suffWords[b] || !suffWords[a]) console.log(b,a); return suffWords[b].length - suffWords[a].length})
+		var sfxList = Object.getOwnPropertyNames(levelSfxForms).sort(function(a, b) {
+			if (!suffWords[b] || !suffWords[a]) console.log(b, a);
+			return suffWords[b].length - suffWords[a].length
+		})
 		console.log(sfxList);
 
 		//generalize level
-		for (var i = 0; i < sfxList.length; i++){
+		for (var i = 0; i < sfxList.length; i++) {
 			var sfx = sfxList[i];
 
 			//collect prev levels words for the sfx
 			var prevLevelWords = [];
-			/*for (var j = 1; j <= sfx.length; j++){
+			for (var j = 1; j <= sfx.length; j++) {
 				var shortSfx = sfx.slice(j);
-				if (suffWords[shortSfx]){
+				if (suffWords[shortSfx]) {
 					prevLevelWords = prevLevelWords.concat(suffWords[shortSfx])
 				}
-			}*/
+			}
 
 			//generalize sfx (first letter)
 			console.log(sfx + "→")
 			//console.log(prevLevelWords)
 
+			var genSfx = sfx,
+				prevGenSfx = sfx;
 			//generalize to the maximum possible extent (neither overlapping any prev level(s) word nor current level word)
-			var genSfx = generalize(sfx, lang);
-			//while (!interferes(genSfx, prevLevelWords, lang)){
-			//	genSfx = generalize(genSfx, lang);
-			//}
+			var maxWordsMet = 3; //linear limiter
+			while (hasSuffix(prevLevelWords, genSfx, lang) < maxWordsMet-- && genSfx) {
+				prevGenSfx = genSfx;
+				genSfx = generalize(genSfx, lang);
+			}
+			//console.log("stopword: ", prevLevelWords[indexOfSuffix(prevLevelWords, genSfx, lang)]);
+			console.log("has suffix " + genSfx + ": ", hasSuffix(prevLevelWords, genSfx, lang));
+			genSfx = prevGenSfx;
 			console.log("\t" + genSfx)
 
 			//cope with other level suffixes
 			var hasMerged = false;
 			var contradicts = false; //whether generalization contradicts with
-			for (var otherSfx in levelSfxForms){
+			for (var otherSfx in levelSfxForms) {
+				//ignore self
 				if (otherSfx === sfx) continue;
 
+				//TODO: is otherSfx has already been covered by generalized suffix - discard it
+				if (isGeneralOf(genSfx, otherSfx, lang)) {
+					console.log(otherSfx + " is covered by " + genSfx + ": merge")
+					//generalize properly 
+					levelGenForms[genSfx] = levelSfxForms[sfx];
+					hasMerged = true;
+					continue;
+				}
+
 				//TODO: merge obvious forms (ай == евич, ой == евич); delete from the source, add to the result
-				if (levelSfxForms[sfx] === levelSfxForms[otherSfx] && generalize(otherSfx, lang) === genSfx){
+				/*if (levelSfxForms[sfx] === levelSfxForms[otherSfx] && isGeneralOf(genSfx, otherSfx, lang)){
 					console.log("merge", sfx, otherSfx, "as " + genSfx)
 					levelGenForms[genSfx] = levelSfxForms[sfx];
 					hasMerged = true;
-				}
+				}*/
 
 				//TODO: merge changeable forms (ций → киевич, вий → виевич ⇒ Cий → Cиевич)
 				/*if (levelSfxForms[sfx].slice(1) === levelSfxForms[otherSfx].slice(1)
@@ -428,10 +455,11 @@ function generalizeScheme(suffixes, source, lang){
 				}*/
 			}
 
-			//keep generalized, if non-contradicts to anyone
+			//TODO: cope with other generalzeds
+			//TODO: if other generalization is narrower than the current one - absorb it by the extended one
 
 			//add simple, if hasn’t changed
-			if (!hasMerged){
+			if (!hasMerged) {
 				levelGenForms[sfx] = levelSfxForms[sfx]
 			}
 		}
@@ -439,7 +467,7 @@ function generalizeScheme(suffixes, source, lang){
 		console.log("generalized to :", levelGenForms);
 		console.groupEnd();
 
-		for (var sfx in levelGenForms){
+		for (var sfx in levelGenForms) {
 			result[sfx] = levelGenForms[sfx];
 		}
 	}
@@ -450,34 +478,92 @@ function generalizeScheme(suffixes, source, lang){
 }
 
 
-//Correctness test
-function testCorrectness(suffixes, source, lang, nFormNumber){
+//Correctness test (all correct === true)
+function testCorrectness(suffixes, source, lang, nFormNumber) {
 	nFormNumber = nFormNumber || 0;
 
 	//form suffixes table
 	console.log("Test " + Object.getOwnPropertyNames(suffixes).length + " suffixes:", suffixes)
 
-	for (var i = 0; i < source.length; i++){
+	for (var i = 0; i < source.length; i++) {
 		var forms = source[i].split(" ");
 		var nForm = forms[nFormNumber];
 		forms.splice(nFormNumber, 1);
 		var spfs = forms.join(" ");
 		var patr = getForms(nForm, suffixes, lang);
-		if (patr === spfs){
+		if (patr === spfs) {
 			//console.log(nForm, patr)
 		} else {
 			console.error("Incorrect: `" + nForm + " " + patr + "`, but source: `" + nForm + " " + spfs + "`")
-			for (var i = nForm.length; i >= 0; i--){
+			for (var i = nForm.length; i >= 0; i--) {
 				var pf = nForm.slice(nForm.length - i, nForm.length);
-				if (suffixes[pf]){
+				if (suffixes[pf]) {
 					console.log("postfix: " + pf + " " + suffixes[pf], " prefixized: " + prefixize(suffixes[pf], nForm.slice(0, nForm.length - i)))
 					prefixize(suffixes[pf], nForm.slice(0, nForm.length - i))
 					break;
 				}
 			}
-			return;		
+			return;
 		}
 	}
 
 	console.log("Test succeeded")
+}
+
+
+//estimates quiality of ending scheme by cross-testing (remove one source-item in turn)
+function estimateQuality(source, lang, nFormNumber){
+	var qtyMeasures = [];
+
+	//source = source.slice(0,100);
+
+	//console.log("Estimate quality on " + source.length + " scheme")
+
+	//measure sets
+	var portion = Math.ceil(source.length * 0.1);
+	for (var i = 0; i < source.length; i+=portion){
+		var controlItems = source.slice(i, i + portion);
+		var studySource = source.slice(0);
+		studySource.splice(i,portion);
+
+		var scheme = getEndingScheme(studySource, 0)
+
+		var qty = getCorrectness(scheme, controlItems, lang, nFormNumber);
+		qtyMeasures.push(qty);
+
+		//console.log(scheme, controlItems, qty)
+	}
+
+	//calc average
+	var sum = 0;
+	for (var i = 0; i < qtyMeasures.length; i++){
+		sum += qtyMeasures[i];
+	}
+
+	return sum/qtyMeasures.length;
+}
+
+//Returns 0..1 number of correct/incorrect items
+function getCorrectness(suffixes, source, lang, nFormNumber) {
+	nFormNumber = nFormNumber || 0;
+
+	var wrong = 0;
+
+	//form suffixes table
+	//console.log("Calc " + Object.getOwnPropertyNames(suffixes).length + " suffixes:", suffixes)
+
+	for (var i = 0; i < source.length; i++) {
+		var forms = source[i].split(" ");
+		var nForm = forms[nFormNumber];
+		forms.splice(nFormNumber, 1);
+		var spfs = forms.join(" ");
+		var patr = getForms(nForm, suffixes, lang);
+		if (patr === spfs) {
+			//console.log(nForm, patr)
+		} else {
+			wrong++;
+		}
+	}
+
+	return (source.length - wrong) / source.length;
 }

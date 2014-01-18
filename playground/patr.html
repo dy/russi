@@ -3,10 +3,23 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<input type="text" id="name" placeholder="∀ word"/>
-<output id="result"></output>
+<input type="text" id="name" placeholder="∀"/>
+<input type="text" id="patr-male" placeholder="∀ович"/>
+<input type="text" id="patr-female" placeholder="∀овна"/>
 
 <script src="../src/util.js"></script>
+<script src="../rus.js"></script>
+<script src="../rus.js"></script>
+
+<ul class="names">
+	<script type="text/javascript">
+		var names = rus.names.sort();
+		for (var i = 0; i < names.length; i++){
+			document.write('<li class="name"><a href="#' + russ.transliterate() + '" class="badge">' + names[i] + '</a></li>')
+		}
+	</script>
+</ul>
+
 <script>
 
 var pfTable = {

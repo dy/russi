@@ -1,0 +1,77 @@
+prefix	type
+ана	greel
+гипер	greek
+гипо	greek
+квази	greek
+мета	greek
+орто	greek
+пара	greek
+прото	greek
+нео	greek
+а	greek
+
+суб	latin
+экс	latin
+ин	latin
+супер	latin
+транс	latin
+пост	latin
+
+анти	other foreign
+архи	other foreign
+би	other foreign
+вице	other foreign
+гипер	other foreign
+дез	other foreign
+де	other foreign
+дис	other foreign
+им	other foreign
+интер	other foreign
+ир	other foreign
+квази	other foreign
+контр	other foreign
+макро	other foreign
+микро	other foreign
+обер	other foreign
+пост	other foreign
+пре	other foreign
+прото	other foreign
+псевдо	other foreign
+ре	other foreign
+суб	other foreign
+супер	other foreign
+транс	other foreign
+ультра	other foreign
+экзо	other foreign
+экс	other foreign
+экстра	other foreign
+
+дека	si up
+гекто	si up
+кило	si up
+мега	si up
+гига	si up
+тера	si up
+пета	si up
+экса	si up
+зетта	si up
+иотта	si up
+деци	si down
+санти	si down
+милли	si down
+микро	si down
+нано	si down
+пико	si down
+фемто	si down
+атто	si down
+зепто	si down
+иокто	si down
+
+кило	bit
+мега	bit
+гига	bit
+тера	bit
+пета	bit
+экса	bit
+зетта	bit
+йотта	bit
