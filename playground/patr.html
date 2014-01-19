@@ -3,9 +3,92 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<input type="text" id="name" placeholder="∀"/>
-<input type="text" id="patr-male" placeholder="∀ович"/>
-<input type="text" id="patr-female" placeholder="∀овна"/>
+<style type="text/css">
+	*{
+		box-sizing: border-box;
+	}
+	body{
+		font-family: sans-serif;
+		line-height: 1.5;
+	}
+	.names{
+		list-style: none;
+		font-size: 12px;
+		line-height: 2;
+		padding: 0;
+	}
+	.name{
+		display: inline-block;
+	}
+	.badge{
+		background: #bbb;
+		color: white;
+		padding: 2px 5px;
+		border: 1px solid #999;
+		border-radius: 2px;
+		text-decoration: none;
+		text-shadow: 0 -1px 0 #999;
+	}
+	.badge:hover{
+		background: #888;
+		border-color: #777;
+	}
+	.badge:visited{
+		background: #cc88cc;
+		border-color: #aa77aa;
+	}
+	.input{
+		width: 26%;
+		position: relative;
+		display: inline-block;
+	}
+	input{
+		line-height: 40px;
+		font-size: 20px;
+		padding: 0 1%;
+		margin: 20px 0;
+		width: 100%;
+		vertical-align: top;
+	}
+	label{
+		position: absolute;
+		font-size: 12px;
+		line-height: 20px;
+		color: #bbb;
+		left: 0;
+		top: 0;
+	}
+	input:focus + label{
+		color: #000;
+	}
+	button{
+		line-height: 40px;
+		margin: 20px 0;
+		padding: 0 10px;
+		font-size: 14px;
+		margin-left: .5%;
+		font-weight: bolder;
+		vertical-align: top;
+		max-width: 18%;
+	}
+</style>
+
+<div class="input">
+	<input type="text" id="name" placeholder="∀"/>
+	<label for="name">имя</label>
+</div>
+
+<div class="input">
+	<input type="text" id="patr-male" placeholder="∀ович"/>
+	<label for="patr-male">отчество мальчика</label>
+</div>
+
+<div class="input">
+	<input type="text" id="patr-female" placeholder="∀овна"/>
+	<label for="patr-female">отчество девочки</label>
+</div>
+
+<button>✘ Неправильно</button>
 
 <script src="../src/util.js"></script>
 <script src="../rus.js"></script>
@@ -15,75 +98,98 @@
 	<script type="text/javascript">
 		var names = rus.names.sort();
 		for (var i = 0; i < names.length; i++){
-			document.write('<li class="name"><a href="#' + russ.transliterate() + '" class="badge">' + names[i] + '</a></li>')
+			names[i] && document.write('<li class="name"><a href="#' + names[i] + '" class="badge">' + names[i] + '</a></li>\n')
 		}
 	</script>
 </ul>
 
+<footer>
+	<a href=""
+	<p class="copyright">Сделал Дима Иванов. <a href="http://github.com/dfcreative"></a></a>
+</footer>
+
 <script>
 
-var pfTable = {
-">аверий": "авериевич авериевна",
+var nfTable = {
 ">стахий": "стахиевич стахиевна",
-"игорий": "игорьевич игорьевна",
-">гелий": "гелиевич гелиевна",
-"трикий": "трикиевич трикиевна",
-">милий": "милиевич милиевна",
+">аверий": "авериевич авериевна",
 ">радий": "радиевич радиевна",
-"никий": "никиевич никиевна",
+"игорий": "игорьевич игорьевна",
+">милий": "милиевич милиевна",
+"врикий": "врикиевич|врикьевич врикиевна|врикьевна",
+">гелий": "гелиевич гелиевна",
+">сила": "силич силовна",
 "импий": "импиевич импиевна",
 "силий": "сильевич сильевна",
-">сила": "силич силовна",
-"иопий": "иопиевич иопиевна",
 ">юрий": "юрьевич юрьевна",
 "торий": "ториевич ториевна",
-"акий": "акиевич акиевна",
-"кила": "килович киловна",
-"нила": "нилович ниловна",
-"клий": "клиевич клиевна",
-"ркий": "ркиевич ркиевна",
-"грий": "гриевич гриевна",
-"хаил": "хайлович хайловна",
-"ксий": "ксиевич ксиевна",
-"рила": "рильевич|рилович рильевна|риловна",
+"иопий": "иопиевич иопиевна",
 "рмий": "рмиевич рмиевна",
+"клий": "клиевич клиевна",
+"ксий": "ксиевич ксиевна",
+"мила": "милич милична",
 "маил": "маилович|майлович маиловна|майловна",
-"вдий": "вдиевич вдиевна",
+"хаил": "хайлович хайловна",
 "ртий": "ртиевич ртиевна",
-"трий": "триевич триевна",
-"окий": "окиевич окиевна",
-"фрий": "фриевич фриевна",
+"рила": "рильевич|рилович рильевна|риловна",
+"Cрий": "Cриевич Cриевна",
 "вила": "вилич|вилович вилична|виловна",
-"вел": "влович вловна",
-"ций": "циевич циевна",
-"йла": "йлович йловна",
-"ков": "ковлевич ковлевна",
-"ьма": "ьмич ьминична",
+"вдий": "вдиевич вдиевна",
 "иль": "ильевич ильевна",
-"рил": "рильевич|рилович рильевна|риловна",
-"гий": "гиевич гиевна",
-"ома": "омич оминична",
 "ука": "укич укинична",
+"вел": "влович вловна",
+"γий": "γиевич γиевна",
+"ций": "циевич циевна",
+"има": "имич имична",
+"ков": "ковлевич ковлевна",
+"рил": "рильевич|рилович рильевна|риловна",
 "ётр": "етрович етровна",
+"ула": "улич улична",
+"ья": "ьич ьинична",
+"ев": "ьвович ьвовна",
+"ла": "лович ловна",
 "ий": "иевич|ьевич иевна|ьевна",
 "ов": "ович овна",
-"ев": "ьвович ьвовна",
-"ья": "ьич ьинична",
-"я": "ич ична",
-"ь": "евич евна",
+"ма": "мич минична",
 "в": "вович|вич вовна|вна",
-"й": "евич евна",
-"а": "ич ична",
+"s": "евич евна",
+"ã": "ич ична",
 "": "ович овна"
 }
 
 	//app
-	var $input = document.getElementById("name"); 
-	var $output = document.getElementById("result"); 
+	var $nf = document.getElementById("name"); 
+	var $mf = document.getElementById("patr-male"); 
+	var $ff = document.getElementById("patr-female");
 
+	var nf = "", forms = rus.getForms(nf, nfTable);
 
-	$input.addEventListener("keyup", function(e){
-		$output.value = getForms($input.value, pfTable);
+	window.addEventListener("popstate", function(e){
+		nf = location.hash.slice(1);
+		$nf.value = nf;
+		update(false);
 	})
+
+	$nf.addEventListener("keyup", function(e){
+		nf = $nf.value;
+		update();
+	})
+	$mf.addEventListener("keyup", function(e){
+		update();
+	})
+	$ff.addEventListener("keyup", function(e){
+		update();
+	})
+
+ 
+	function update(updUrl){
+		forms = rus.getForms(nf, nfTable);
+		$mf.value = nf ? forms.split(" ")[0].split("|")[0] : ""
+		$ff.value = nf ? forms.split(" ")[1].split("|")[0] : ""
+
+		if (updUrl !== false){
+			location.hash = "#" + nf;
+		}
+	}
 
 </script>

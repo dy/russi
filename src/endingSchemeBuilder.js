@@ -330,6 +330,7 @@ function reverse(str) {
 //common problem of suffixes object is a plentitude of exceptional suffixes, and small number of generic suffixes
 //goal is to get minimal diverse suffixes scheme
 //also it is more accurately supposes similar-endings suffixes, like ре ×→ реович (non-general ending) → ревич (general ending)
+var debug = 0;
 function generalizeScheme(suffixes, source, lang) {
 	var result = {};
 
@@ -365,7 +366,7 @@ function generalizeScheme(suffixes, source, lang) {
 		}
 	}
 
-	console.log(suffWords, wordSuffs)
+	debug && console.log(suffWords, wordSuffs)
 
 	//	2.1 find shortable special sfxs, find common groups for 
 	//3. shorten lenghten forms, if possible
@@ -384,14 +385,14 @@ function generalizeScheme(suffixes, source, lang) {
 			}
 		}
 
-		console.group("Level " + len, levelSfxForms)
+		debug && console.group("Level " + len, levelSfxForms)
 
 		//get sorted by desc popularity sfxList
 		var sfxList = Object.getOwnPropertyNames(levelSfxForms).sort(function(a, b) {
-			if (!suffWords[b] || !suffWords[a]) console.log(b, a);
+			if (!suffWords[b] || !suffWords[a]) debug && console.log(b, a);
 			return suffWords[b].length - suffWords[a].length
 		})
-		console.log(sfxList);
+		debug && console.log(sfxList);
 
 		//generalize level
 		for (var i = 0; i < sfxList.length; i++) {
@@ -407,8 +408,8 @@ function generalizeScheme(suffixes, source, lang) {
 			}
 
 			//generalize sfx (first letter)
-			console.log(sfx + "→")
-			//console.log(prevLevelWords)
+			debug && console.log(sfx + "→")
+			//debug && console.log(prevLevelWords)
 
 			var genSfx = sfx,
 				prevGenSfx = sfx;
@@ -418,10 +419,10 @@ function generalizeScheme(suffixes, source, lang) {
 				prevGenSfx = genSfx;
 				genSfx = generalize(genSfx, lang);
 			}
-			//console.log("stopword: ", prevLevelWords[indexOfSuffix(prevLevelWords, genSfx, lang)]);
-			console.log("has suffix " + genSfx + ": ", hasSuffix(prevLevelWords, genSfx, lang));
+			//debug && console.log("stopword: ", prevLevelWords[indexOfSuffix(prevLevelWords, genSfx, lang)]);
+			debug && console.log("has suffix " + genSfx + ": ", hasSuffix(prevLevelWords, genSfx, lang));
 			genSfx = prevGenSfx;
-			console.log("\t" + genSfx)
+			debug && console.log("\t" + genSfx)
 
 			//cope with other level suffixes
 			var hasMerged = false;
@@ -432,16 +433,15 @@ function generalizeScheme(suffixes, source, lang) {
 
 				//TODO: is otherSfx has already been covered by generalized suffix - discard it
 				if (isGeneralOf(genSfx, otherSfx, lang)) {
-					console.log(otherSfx + " is covered by " + genSfx + ": merge")
-					//generalize properly 
-					levelGenForms[genSfx] = levelSfxForms[sfx];
+					debug && console.log(otherSfx + " is covered by " + genSfx + ": merge")			
+					levelGenForms[genSfx] = generalizeForms(levelSfxForms[sfx], genSfx);
 					hasMerged = true;
 					continue;
 				}
 
 				//TODO: merge obvious forms (ай == евич, ой == евич); delete from the source, add to the result
 				/*if (levelSfxForms[sfx] === levelSfxForms[otherSfx] && isGeneralOf(genSfx, otherSfx, lang)){
-					console.log("merge", sfx, otherSfx, "as " + genSfx)
+					debug && console.log("merge", sfx, otherSfx, "as " + genSfx)
 					levelGenForms[genSfx] = levelSfxForms[sfx];
 					hasMerged = true;
 				}*/
@@ -464,7 +464,7 @@ function generalizeScheme(suffixes, source, lang) {
 			}
 		}
 
-		console.log("generalized to :", levelGenForms);
+		debug && console.log("generalized to :", levelGenForms);
 		console.groupEnd();
 
 		for (var sfx in levelGenForms) {
@@ -472,7 +472,7 @@ function generalizeScheme(suffixes, source, lang) {
 		}
 	}
 
-	console.log("Generalized to " + Object.getOwnPropertyNames(result).length + " suffixes:", result)
+	debug && console.log("Generalized to " + Object.getOwnPropertyNames(result).length + " suffixes:", result)
 
 	return result
 }
@@ -512,7 +512,7 @@ function testCorrectness(suffixes, source, lang, nFormNumber) {
 
 
 //estimates quiality of ending scheme by cross-testing (remove one source-item in turn)
-function estimateQuality(source, lang, nFormNumber){
+function estimateQuality(fn, source, lang, nFormNumber){
 	var qtyMeasures = [];
 
 	//source = source.slice(0,100);
@@ -526,7 +526,7 @@ function estimateQuality(source, lang, nFormNumber){
 		var studySource = source.slice(0);
 		studySource.splice(i,portion);
 
-		var scheme = getEndingScheme(studySource, 0)
+		var scheme = fn(studySource, 0)
 
 		var qty = getCorrectness(scheme, controlItems, lang, nFormNumber);
 		qtyMeasures.push(qty);

@@ -15,6 +15,7 @@ rus.pronouns = //#put dictToArray("dicts/pronouns.txt");
 rus.patronimics = //#put dictToArray("dicts/patronimics.txt");
 //#endif
 
+rus.names = //#put dictToArray("dicts/names.txt", {format: "name"});
 
 //TODO: generate these groups automatically
 //generate groups
@@ -27,18 +28,18 @@ rus.groups = {
     S: rus.sibilant,
 
     //sonant groups
-    α: "ая",
-    θ: "оё",
-    υ: "ую",
-    ε: "эе",
-    ι: "ыи",
+    ã: "ая",
+    õ: "оё",
+    ũ: "ую",
+    ẽ: "эе",
+    ĩ: "ыи",
 
     //consonant groups
     β: "бп",
     ν: "вф",
     γ: "гк",
     δ: "дт",
-    η: "жш",
+    ξ: "жш",
     ζ: "зс",
 
     //softeners
@@ -49,22 +50,22 @@ rus.groups = {
 //TODO: pick groups so to minify form groups of words
 rus.genGroups = {
     //sonants
-    а: "α",
-    я: "α",
-    о: "θ",
-    ё: "θ",
-    у: "υ",
-    ю: "υ",
-    э: "ε",
-    е: "ε",
-    ы: "ι",
-    и: "ι",
+    а: "ã",
+    я: "ã",
+    о: "õ",
+    ё: "õ",
+    у: "ũ",
+    ю: "ũ",
+    э: "ẽ",
+    е: "ẽ",
+    ы: "ĩ",
+    и: "ĩ",
 
-    α: "A",
-    θ: "A",
-    υ: "A",
-    ε: "A",
-    ι: "A",
+    ã: "V",
+    õ: "V",
+    ũ: "V",
+    ẽ: "V",
+    ĩ: "V",
 
     //consonants
     б: "β",
@@ -75,8 +76,8 @@ rus.genGroups = {
     к: "γ",
     д: "δ",
     т: "δ",
-    //ж: "η",
-    //ш: "η",
+    //ж: "ξ",
+    //ш: "ξ",
     з: "ζ",
     с: "ζ",
 
@@ -84,7 +85,7 @@ rus.genGroups = {
     ν: "C",
     γ: "C",
     δ: "C",
-    η: "C",
+    ξ: "C",
     ζ: "C",
 
     л: "C",
@@ -108,3 +109,8 @@ rus.genGroups = {
 
     S: "C"
 }
+
+
+
+//Methods
+rus.getForms = getForms;

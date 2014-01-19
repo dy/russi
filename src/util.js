@@ -27,8 +27,8 @@ function getForms(nForm, suffixDict, lang) {
 			var genSfx = suffix;
 			while ((genSfx = generalize(genSfx, lang)) !== false){
 				if (suffixDict[genSfx]){
-					var result = suffixDict[genSfx];
-					//TODO: replace generalizations in result
+					var result = degeneralizeForms(suffixDict[genSfx], genSfx, suffix);
+					//TODO: replace generalizations in result					
 					//TODO: replace \1, \2, ... references in result
 					return prefixize(result, nFormAlt.slice(0, nFormAlt.length - i))
 				}
@@ -40,6 +40,7 @@ function getForms(nForm, suffixDict, lang) {
 //return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
 function generalize(str, lang){
 	if (!str) return "";
+	if (!lang) lang = rus;
 
 	if (str.length === 1 && !lang.genGroups[str[0]]) return false;
 
@@ -55,15 +56,51 @@ function generalize(str, lang){
 	return result;
 }
 
+//make forms of the general level according to genSfx level
+function generalizeForms(forms, genSfx){
+	for (var i = 0; i < genSfx.length; i++) {
+		if (rus.groups[genSfx[i]]){
+
+			forms = mapForms(forms, function(form){
+				if (isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
+				return form;
+			})
+		}
+	};
+
+	return forms
+}
+
+//specify forms based on specific suffix
+function degeneralizeForms(genForms, genSfx, sfx){
+	for (var i = 0; i < genSfx.length; i++) {
+		if (rus.groups[genSfx[i]]){
+			genForms = mapForms(genForms, function(form){
+				return form.replace(genSfx[i], sfx[i])
+			})
+		}
+	};
+
+	return genForms;
+}
+
+
+
 //tests whether genStr is general form of str 
 function isGeneralOf(targetGenStr, str, lang){
-	var genStr = str;
+
+	if (!lang) lang = rus;
 
 	if (targetGenStr === str) return true;
+	var genStr = generalize(str);
 
-	while ((genStr = generalize(genStr, lang)) !== false){
+	while (genStr !== false){
 		if (genStr === targetGenStr) return true;
+		genStr = generalize(genStr, lang);
 	}
+
+	if (genStr === targetGenStr) return true;
+
 	return false;
 }
 
@@ -106,31 +143,34 @@ function indexOfSuffix(list, genSfx, lang){
 	return -1;
 }
 
-//gets "ович овна|евна", returns "рович ровна|ревна"
-function prefixize(forms, prefix){
+//applies fn to all forms in string
+function mapForms(formsStr, fn){
+	if (typeof formsStr !== "string") return console.error("non string passed", formsStr)
+
 	var result = "";
-	var forms = forms.split(" ");
+	
+	var forms = formsStr.split(" ");
 	for (var i = 0; i < forms.length; i++){
 		var alts = forms[i].split("|");
 		for (var j = 0; j < alts.length; j++){
-			result += prefix + alts[j] + "|"
+			result += fn(alts[j]) + "|"
 		}
 		result = result.slice(0, -1) + " ";
 	}
 	return result.slice(0, -1);
 }
 
+//gets "ович овна|евна", returns "рович ровна|ревна"
+function prefixize(forms, prefix){
+	return mapForms(forms, function(form, i){
+		return prefix + form
+	})
+}
+
 
 //gets "ович овна|евна", returns "вич вна|вна"
 function unprefixize(forms, num){
-	var result = "";
-	var forms = forms.split(" ");
-	for (var i = 0; i < forms.length; i++){
-		var alts = forms[i].split("|");
-		for (var j = 0; j < alts.length; j++){
-			result += alts[j].slice(num) + "|"
-		}
-		result = result.slice(0, -1) + " ";
-	}
-	return result.slice(0, -1);
+	return mapForms(forms, function(form, i){
+		return form.slice(num)
+	})
 }

@@ -19,3 +19,9 @@
 * Automatic accents setter
 
 * Separate data from algorithms, write data with data-descriptive data, do not mix it with algorithms. Build is, if you need to deliver a library.
+
+* Ligatourize
+
+* Reflect text
+
+* Typographer

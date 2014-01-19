@@ -14,6 +14,16 @@ module.exports = function(grunt) {
 			}
 		},
 
+		sweetjs: {
+			main: {
+				src: "<%= pkg.name %>.js",
+				dest: "<%= pkg.name %>.sour.js"
+			},
+			options: {
+				readableNames: true
+			}
+		},
+
 		homemade: {
 			main: {
 				src: "./build/build.js",
@@ -109,8 +119,8 @@ module.exports = function(grunt) {
 
 		watch: {
 			files: ["dicts/*", "src/*"],
-			tasks: "homemade"
-		}
+			tasks: ["homemade"]
+		},
 	});
 
 	//load tasks
@@ -119,6 +129,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-closure-compiler');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks("grunt-homemade");
+	grunt.loadNpmTasks('grunt-sweet.js');
 
 	//register tasks
 	grunt.registerTask('test', ['jshint', 'qunit']);
