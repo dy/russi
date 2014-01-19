@@ -175,6 +175,12 @@ function unprefixize(forms, num){
 	})
 }
 
+function toLowerCaseDict(source){
+	for (var i = 0; i < source.length; i++){
+		source[i] = source[i].toLowerCase();
+	}
+	return source;
+}
 
 
 //Exports
@@ -184,5 +190,5 @@ g.prefixize = prefixize;
 g.unprefixize = unprefixize;
 g.generalize = generalize;
 g.wordBoundary = wordBoundary;
-g.unprefixize = unprefixize;
+g.toLowerCaseDict = toLowerCaseDict;
 //#endexclude

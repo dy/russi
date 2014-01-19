@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <title>Debug</title>
 
-<script src="../rus.js"></script>
+<script src="../rus.dev.js"></script>
 
 <script src="../src/RadixTrei.js"></script>
 <script src="../src/endingSchemeBuilder.js"></script>
@@ -38,9 +38,7 @@
 	console.log("Source", source.length)
 	
 	//lower case
-	for (var i = 0; i < source.length; i++){
-		source[i] = source[i].toLowerCase();
-	}
+	toLowerCaseDict(source);
 
 
 	var suffixes = getEndingScheme(source, 0);
@@ -53,12 +51,11 @@
 	console.log("qty: " + estimateQuality(function(source, num){ return generalizeScheme(getEndingScheme(source, num), source, rus) }, source, rus, 0));
 
 	//render json
-	var pfs = Object.getOwnPropertyNames(genSuffixes).sort(function(a,b){return b.length - a.length});
+	/*var pfs = Object.getOwnPropertyNames(genSuffixes).sort(function(a,b){return b.length - a.length});
 	var res = "{\n";
 	for (var i = 0; i < pfs.length; i++){
 		res += "\"" + pfs[i] + "\": \"" + genSuffixes[pfs[i]] + "\"" + ",\n"
 	}
 	res = res.slice(0, -2) + "\n}"
-	console.log(res)
-
+	console.log(res*/
 </script>
