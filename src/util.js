@@ -3,6 +3,8 @@ var wordBoundary = ">"
 
 
 //return forms for the normal form from the suffix dictionary
+//TODO: get rid of lang;
+//TODO: not working on `rus.getForms("Арт", rus.patrMfSfx, rus)`
 function getForms(nForm, suffixDict, lang) {
 	var nFormAlts = nForm.split("|");
 
@@ -36,6 +38,7 @@ function getForms(nForm, suffixDict, lang) {
 		}
 	}
 }
+
 
 //return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
 function generalize(str, lang){
