@@ -111,7 +111,9 @@ rus.genGroups = {
 rus.patronimics = //#put patronimics;
 //#endif
 
-rus.patrNfSfxTable = //#put getEndingScheme(toLowerCaseDict(patronimics)); 
+rus.patrNfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 0)); 
+rus.patrMfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 1)); 
+rus.patrFfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 2)); 
 
 
 //Methods

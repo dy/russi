@@ -60,11 +60,12 @@ function generalize(str, lang){
 function generalizeForms(forms, genSfx){
 	for (var i = 0; i < genSfx.length; i++) {
 		if (rus.groups[genSfx[i]]){
-
+			//console.log(forms, genSfx[i])
 			forms = mapForms(forms, function(form){
-				if (isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
+				if (form[i] && isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
 				return form;
 			})
+
 		}
 	};
 
@@ -88,7 +89,7 @@ function degeneralizeForms(genForms, genSfx, sfx){
 
 //tests whether genStr is general form of str 
 function isGeneralOf(targetGenStr, str, lang){
-
+	if (!str) throw new Error("No string passed: ", str);
 	if (!lang) lang = rus;
 
 	if (targetGenStr === str) return true;
@@ -175,10 +176,38 @@ function unprefixize(forms, num){
 	})
 }
 
-function toLowerCaseDict(source){
+//lowercasifies list of forms
+function toLowerCaseList(source){
 	for (var i = 0; i < source.length; i++){
 		source[i] = source[i].toLowerCase();
 	}
+	return source;
+}
+
+//returns normal forms object based on forms array passed
+function getNfDict(formsSource, nfNumber){
+	if (!formsSource || !formsSource.length) return console.error("No formsSource passed")
+
+	//max number of formsSource
+	var formsNumber = formsSource[0].split(" ").length;
+
+	nfNumber = nfNumber || 0;
+
+	//get normal-form-keyed object
+	var source = {};
+	for (var i = 0; i < formsSource.length; i++) {
+		var forms = formsSource[i].split(" "),
+			nForm = forms[nfNumber];
+
+		forms.splice(nfNumber, 1);
+
+		var nFormAlts = nForm.split("|");
+		for (var a = 0; a < nFormAlts.length; a++) {
+			source[nFormAlts[a]] = forms.join(" ");
+		}
+
+	}
+
 	return source;
 }
 
@@ -190,5 +219,6 @@ g.prefixize = prefixize;
 g.unprefixize = unprefixize;
 g.generalize = generalize;
 g.wordBoundary = wordBoundary;
-g.toLowerCaseDict = toLowerCaseDict;
+g.toLowerCaseList = toLowerCaseList;
+g.getNfDict = getNfDict;
 //#endexclude

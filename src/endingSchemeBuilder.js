@@ -23,35 +23,13 @@
  * a) it can’t have alternatives
  * b) generalizations can change the normal form only, not the rest forms - they’re supposed to be persistent
  *
- * @param formsSource is array of space-separated word forms, like ["nf f1 f2", "nf f1|f1a f2", ...]
+ * @param source is normal-form keyed forms associative array, like { nf: "f1 f2 f3", nf2: "f1 f2 f3", ...}
  * @param nFormsNumber points the normal form of word (having no alternatives)
  * @param genGroups - dict of groups of symbols to make generalizations, like {v: "аеёийоуыэюя"}
  */
 
-function getEndingScheme(formsSource, nFormNumber) {
-
-	if (!formsSource || !formsSource.length) return console.error("No formsSource passed")
-
-	//max number of formsSource
-	var formsNumber = formsSource[0].split(" ").length;
-
-	nFormNumber = nFormNumber || 0;
-
-	//get normal-form-keyed object
-	var source = {};
-	for (var i = 0; i < formsSource.length; i++) {
-		var forms = formsSource[i].split(" "),
-			nForm = forms[nFormNumber];
-
-		forms.splice(nFormNumber, 1);
-
-		var nFormAlts = nForm.split("|");
-		for (var a = 0; a < nFormAlts.length; a++) {
-			source[nFormAlts[a]] = forms.join(" ");
-		}
-
-	}
-
+//as far resulting table is nf-keyed, source has to be keyed also
+function getEndingScheme(source) {	
 	//reverse words and words-source to exclude at the same time
 	var reversedNfs = Object.getOwnPropertyNames(source);
 	for (var i = 0; i < reversedNfs.length; i++) {
@@ -332,9 +310,9 @@ function reverse(str) {
 //common problem of suffixes object is a plentitude of exceptional suffixes, and small number of generic suffixes
 //goal is to get minimal diverse suffixes scheme
 //also it is more accurately supposes similar-endings suffixes, like ре ×→ реович (non-general ending) → ревич (general ending)
-var debug = 0;
 function generalizeScheme(suffixes, source, lang) {
 	var result = {};
+	var debug = 0;
 
 	var suffixesList = Object.getOwnPropertyNames(suffixes);
 	suffixesList.sort(function(a, b) {
@@ -343,12 +321,13 @@ function generalizeScheme(suffixes, source, lang) {
 
 	//distribute words by suffixes
 	var suffWords = {},
-		wordSuffs = {};
+		wordSuffs = {},
+		sourceNfs = Object.getOwnPropertyNames(source);
 	for (var i = 0; i < suffixesList.length; i++) {
 		var suffix = suffixesList[i];
 		//console.log(suffix)
-		for (var j = 0; j < source.length; j++) {
-			var word = source[j].split(" ")[0];
+		for (var j = 0; j < sourceNfs.length; j++) {
+			var word = sourceNfs[j];
 			var wordAlts = word.split("|");
 			//console.log(word)
 			for (var a = 0; a < wordAlts.length; a++) {
@@ -361,14 +340,14 @@ function generalizeScheme(suffixes, source, lang) {
 					)
 				) {
 					suffWords[suffix] = (suffWords[suffix] || [])
-					suffWords[suffix].push(source[j]);
+					suffWords[suffix].push(sourceNfs[j] + " " + source[sourceNfs[j]]);
 					wordSuffs[wordAlt] = suffix + " " + suffixes[suffix];
 				}
 			}
 		}
 	}
 
-	debug && console.log(suffWords, wordSuffs)
+	//debug && console.log("generalize", suffWords, wordSuffs)
 
 	//	2.1 find shortable special sfxs, find common groups for 
 	//3. shorten lenghten forms, if possible
@@ -416,7 +395,7 @@ function generalizeScheme(suffixes, source, lang) {
 			var genSfx = sfx,
 				prevGenSfx = sfx;
 			//generalize to the maximum possible extent (neither overlapping any prev level(s) word nor current level word)
-			var maxWordsMet = 3; //linear limiter
+			var maxWordsMet = 2; //linear limiter
 			while (hasSuffix(prevLevelWords, genSfx, lang) < maxWordsMet-- && genSfx) {
 				prevGenSfx = genSfx;
 				genSfx = generalize(genSfx, lang);
@@ -435,7 +414,8 @@ function generalizeScheme(suffixes, source, lang) {
 
 				//TODO: is otherSfx has already been covered by generalized suffix - discard it
 				if (isGeneralOf(genSfx, otherSfx, lang)) {
-					debug && console.log(otherSfx + " is covered by " + genSfx + ": merge")			
+					debug && console.log(otherSfx + " is covered by " + genSfx + ": merge", "`" + levelSfxForms[sfx] + "`")
+					//TODO: if at least one spec form has different (not generalizable) letter - do not generalize that letter is spf
 					levelGenForms[genSfx] = generalizeForms(levelSfxForms[sfx], genSfx);
 					hasMerged = true;
 					continue;
@@ -446,10 +426,10 @@ function generalizeScheme(suffixes, source, lang) {
 					debug && console.log("merge", sfx, otherSfx, "as " + genSfx)
 					levelGenForms[genSfx] = levelSfxForms[sfx];
 					hasMerged = true;
-				}*/
+				}
 
 				//TODO: merge changeable forms (ций → киевич, вий → виевич ⇒ Cий → Cиевич)
-				/*if (levelSfxForms[sfx].slice(1) === levelSfxForms[otherSfx].slice(1)
+				if (levelSfxForms[sfx].slice(1) === levelSfxForms[otherSfx].slice(1)
 					&& generalize(otherSfx, lang) === genSfx
 					&& generalize(levelSfxForms[sfx], lang) === generalize(levelSfxForms[otherSfx], lang)) {
 					levelGenForms[genSfx] = generalize(levelSfxForms[sfx], lang);
@@ -478,20 +458,15 @@ function generalizeScheme(suffixes, source, lang) {
 
 	return result
 }
-
+debug = 0;
 
 //Correctness test (all correct === true)
-function testCorrectness(suffixes, source, lang, nFormNumber) {
-	nFormNumber = nFormNumber || 0;
-
+function testCorrectness(suffixes, source, lang) {
 	//form suffixes table
 	console.log("Test " + Object.getOwnPropertyNames(suffixes).length + " suffixes:", suffixes)
 
-	for (var i = 0; i < source.length; i++) {
-		var forms = source[i].split(" ");
-		var nForm = forms[nFormNumber];
-		forms.splice(nFormNumber, 1);
-		var spfs = forms.join(" ");
+	for (var nForm in source) {
+		var spfs = source[nForm];
 		var patr = getForms(nForm, suffixes, lang);
 		if (patr === spfs) {
 			//console.log(nForm, patr)
@@ -514,23 +489,35 @@ function testCorrectness(suffixes, source, lang, nFormNumber) {
 
 
 //estimates quiality of ending scheme by cross-testing (remove one source-item in turn)
-function estimateQuality(fn, source, lang, nFormNumber){
+function estimateQuality(fn, source, lang){
 	var qtyMeasures = [];
 
 	//source = source.slice(0,100);
 
-	//console.log("Estimate quality on " + source.length + " scheme")
 
 	//measure sets
-	var portion = Math.ceil(source.length * 0.1);
-	for (var i = 0; i < source.length; i+=portion){
-		var controlItems = source.slice(i, i + portion);
-		var studySource = source.slice(0);
-		studySource.splice(i,portion);
+	var nfs = Object.getOwnPropertyNames(source);
+	var portion = Math.ceil(nfs.length * 0.1);
 
-		var scheme = fn(studySource, 0)
+	//console.log("Estimate quality on " + nfs.length + " scheme")
 
-		var qty = getCorrectness(scheme, controlItems, lang, nFormNumber);
+	for (var i = 0; i < nfs.length; i+=portion){
+		var controlNfs = nfs.slice(i, i + portion);
+		var controlItems = {};
+		for (var j = 0; j < controlNfs.length; j++){
+			controlItems[controlNfs[j]] = source[controlNfs[j]]
+		}
+
+		var studyNfs = nfs.slice(0);
+		var studyItems = {};
+		studyNfs.splice(i,portion);
+		for (var j = 0; j < studyNfs.length; j++){
+			studyItems[studyNfs[j]] = source[studyNfs[j]]
+		}
+
+		var scheme = fn(studyItems)
+
+		var qty = getCorrectness(scheme, controlItems, lang);
 		qtyMeasures.push(qty);
 
 		//console.log(scheme, controlItems, qty)
@@ -546,20 +533,17 @@ function estimateQuality(fn, source, lang, nFormNumber){
 }
 
 //Returns 0..1 number of correct/incorrect items
-function getCorrectness(suffixes, source, lang, nFormNumber) {
-	nFormNumber = nFormNumber || 0;
-
+function getCorrectness(suffixes, source, lang) {
 	var wrong = 0;
 
 	//form suffixes table
 	//console.log("Calc " + Object.getOwnPropertyNames(suffixes).length + " suffixes:", suffixes)
 
-	for (var i = 0; i < source.length; i++) {
-		var forms = source[i].split(" ");
-		var nForm = forms[nFormNumber];
-		forms.splice(nFormNumber, 1);
-		var spfs = forms.join(" ");
-		var patr = getForms(nForm, suffixes, lang);
+	var sourceLen = Object.getOwnPropertyNames(source).length; 
+
+	for (var nf in source) {
+		var spfs = source[nf]
+		var patr = getForms(nf, suffixes, lang);
 		if (patr === spfs) {
 			//console.log(nForm, patr)
 		} else {
@@ -567,7 +551,7 @@ function getCorrectness(suffixes, source, lang, nFormNumber) {
 		}
 	}
 
-	return (source.length - wrong) / source.length;
+	return (sourceLen - wrong) / sourceLen;
 }
 
 

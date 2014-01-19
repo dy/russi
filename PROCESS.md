@@ -38,3 +38,8 @@
 
 * ? The main question is: could absence of generalization affect initial suffixes table or not?
 * The best result of generalization is about 10-12 rules.
+
+* Is it better to use nf-keyed objects to build table or use multiforms table builder?
+	* Nf-keyed table is simplied to build (defer multitable builder)
+	* There’s a risc that multitables’d be too huge comparing to single tables. Whereas single-form tables can shorten itselves’ resulting form diversity, multitables are too difficult to shorten.
+	
