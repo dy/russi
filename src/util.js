@@ -174,3 +174,15 @@ function unprefixize(forms, num){
 		return form.slice(num)
 	})
 }
+
+
+
+//Exports
+//#exclude
+var g = Function('return this')();
+g.prefixize = prefixize;
+g.unprefixize = unprefixize;
+g.generalize = generalize;
+g.wordBoundary = wordBoundary;
+g.unprefixize = unprefixize;
+//#endexclude

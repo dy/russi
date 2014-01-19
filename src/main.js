@@ -11,10 +11,6 @@ rus.prepositions = //#put dictToArray("dicts/prepositions.txt");
 rus.prefixes = //#put dictToArray("dicts/prefixes.txt");
 rus.pronouns = //#put dictToArray("dicts/pronouns.txt");
 
-//#if DEV
-rus.patronimics = //#put dictToArray("dicts/patronimics.txt");
-//#endif
-
 rus.names = //#put dictToArray("dicts/names.txt", {format: "name"});
 
 //TODO: generate these groups automatically
@@ -110,6 +106,12 @@ rus.genGroups = {
     S: "C"
 }
 
+//#define patronimics = dictToArray("dicts/patronimics.txt");
+//#if DEV
+rus.patronimics = //#put patronimics;
+//#endif
+
+rus.patrNfSfxTable = //#put getEndingScheme(toLowerCaseDict(patronimics)); 
 
 
 //Methods

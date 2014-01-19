@@ -27,6 +27,7 @@
  * @param nFormsNumber points the normal form of word (having no alternatives)
  * @param genGroups - dict of groups of symbols to make generalizations, like {v: "аеёийоуыэюя"}
  */
+
 function getEndingScheme(formsSource, nFormNumber) {
 
 	if (!formsSource || !formsSource.length) return console.error("No formsSource passed")
@@ -79,6 +80,7 @@ function getEndingScheme(formsSource, nFormNumber) {
 
 	return result;
 }
+
 
 //debug details: 0, 1, 2
 var debug = 0;
@@ -567,3 +569,12 @@ function getCorrectness(suffixes, source, lang, nFormNumber) {
 
 	return (source.length - wrong) / source.length;
 }
+
+
+
+//Exports
+//#exclude
+var g = Function('return this')();
+g.getEndingScheme = getEndingScheme;
+g.generalizeScheme = generalizeScheme;
+//#endexclude

@@ -1,3 +1,8 @@
+//Buiding-stage dependencies
+require("./src/util.js");
+require("./src/endingSchemeBuilder.js");
+require("./src/RadixTrei.js");
+
 module.exports = function(grunt) {
 
 	// Project configuration.
@@ -31,6 +36,15 @@ module.exports = function(grunt) {
 				context: {
 					projectName: "<%= pkg.name %>",
 					DEV: true,
+					generalizeScheme: generalizeScheme,
+					getEndingScheme: getEndingScheme,
+
+					toLowerCaseDict: function(source){
+						for (var i = 0; i < source.length; i++){
+							source[i] = source[i].toLowerCase();
+						}
+						return source
+					},
 
 					//converts TSV dict to array
 					dictToArray: function(path, options){
@@ -40,8 +54,9 @@ module.exports = function(grunt) {
 						//returns serialized array
 						//grunt.log.write("dictToArray: `" + path + "`\n")
 						var src = grunt.file.read(path);
+						//grunt.log.write(src)
 
-						var arr = src.split("\r\n");
+						var arr = src.split(/\r?\n/);
 
 						//make format
 						var fields = (options && options.format || arr[0]).split(/\s/),
@@ -63,6 +78,7 @@ module.exports = function(grunt) {
 
 						//grunt.log.write(filterBy + "\n")
 
+
 						//filter checker
 						function passFilter(forms, filterBy){
 							for (var i = 0; i < filterBy.length; i++){
@@ -73,29 +89,26 @@ module.exports = function(grunt) {
 
 
 						//parse table
-						var result = "";
-
-						if (options.join !== undefined) result += "'";
-						else result += "[";
+						var result = [];
 
 						for (var i = 1; i < arr.length; i++){
-							var forms = arr[i].split("\t");
+							if (!arr[i].trim()) continue;
 
-							if (options.join === undefined) result += "'";
+							var forms = arr[i].split("\t");
+							var resStr = "";
 
 							if (passFilter(forms, filterBy)) {
 								for (var j = 0; j < fieldNumbers.length; j++){
-									result += forms[j] + options.divider;
+									resStr += forms[j] + options.divider;
 								}
-								if (options.divider) result = result.slice(0, -options.divider.length);
+								if (options.divider) resStr = resStr.slice(0, -options.divider.length);
 							}
 
-							result += options.join === undefined ? "'," : options.join;							
+							result.push(resStr);
 						}
 
-						if (options.join !== undefined) result += "'";
-						else result = result.slice(0,-1) + "]";
-
+						if (options.join !== undefined) return result.join(options.join)
+						
 						return result;						
 					}
 				}
@@ -118,7 +131,7 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
-			files: ["dicts/*", "src/*"],
+			files: ["dicts/*", "src/*", "gruntfile.js"],
 			tasks: ["homemade"]
 		},
 	});

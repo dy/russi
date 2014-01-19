@@ -25,3 +25,6 @@
 * Reflect text
 
 * Typographer
+
+* Make index demo page
+* Make wrong! feedback on patronimics demo page

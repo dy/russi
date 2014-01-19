@@ -114,3 +114,9 @@ RadixTreiNode.prototype = {
 
 	}
 }
+
+
+//#exclude
+var g = Function('return this')();
+g.RadixTrei = RadixTrei;
+//#endexclude
