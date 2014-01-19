@@ -2457,55 +2457,170 @@ rus.genGroups = {
 
 
 
-rus.patrNfSfxTable = { "":"ович овна",
-  "а":"ич ична",
+rus.patrNfSfx = { "":"ович овна",
   "й":"евич евна",
-  "ь":"евич евна",
   "в":"вович|вич вовна|вна",
+  "ь":"евич евна",
   "я":"ич инична",
-  "ла":"лович ловна",
-  "ма":"мич минична",
+  "а":"ич ична",
   "ий":"иевич|ьевич иевна|ьевна",
   "ов":"ович овна",
   "ев":"ьвович ьвовна",
   "ня":"нич нична",
-  "рил":"рильевич|рилович рильевна|риловна",
+  "ла":"лович ловна",
+  "ма":"мич минична",
   "вел":"влович вловна",
-  "ётр":"етрович етровна",
-  "ула":"улич улична",
-  "има":"имич имична",
-  "ука":"укич укинична",
+  "рил":"рильевич|рилович рильевна|риловна",
   "кий":"киевич киевна",
   "гий":"гиевич гиевна",
   "ций":"циевич циевна",
-  "иль":"ильевич ильевна",
+  "ётр":"етрович етровна",
   "ков":"ковлевич ковлевна",
+  "иль":"ильевич ильевна",
+  "ула":"улич улична",
+  "ука":"укич укинична",
+  "има":"имич имична",
   "хаил":"хайлович хайловна",
   "маил":"маилович|майлович маиловна|майловна",
-  "мила":"милич милична",
-  "рила":"рильевич|рилович рильевна|риловна",
-  "вила":"вилич|вилович вилична|виловна",
-  ">сила":"силич силовна",
-  "ксий":"ксиевич ксиевна",
   "ртий":"ртиевич ртиевна",
-  "вдий":"вдиевич вдиевна",
-  "фрий":"фриевич фриевна",
-  ">юрий":"юрьевич юрьевна",
+  "рмий":"рмиевич рмиевна",
   "грий":"гриевич гриевна",
   "трий":"триевич триевна",
+  ">юрий":"юрьевич юрьевна",
+  "фрий":"фриевич фриевна",
   "клий":"клиевич клиевна",
-  "рмий":"рмиевич рмиевна",
-  ">радий":"радиевич радиевна",
+  "ксий":"ксиевич ксиевна",
+  "вдий":"вдиевич вдиевна",
+  "рила":"рильевич|рилович рильевна|риловна",
+  "мила":"милич милична",
+  ">сила":"силич силовна",
+  "вила":"вилич|вилович вилична|виловна",
   "торий":"ториевич ториевна",
-  "силий":"сильевич сильевна",
   ">милий":"милиевич милиевна",
+  "силий":"сильевич сильевна",
   ">гелий":"гелиевич гелиевна",
-  "импий":"импиевич импиевна",
   "иопий":"иопиевич иопиевна",
-  "врикий":"врикиевич|врикьевич врикиевна|врикьевна",
+  "импий":"импиевич импиевна",
+  ">радий":"радиевич радиевна",
   ">аверий":"авериевич авериевна",
   "игорий":"игорьевич игорьевна",
+  "врикий":"врикиевич|врикьевич врикиевна|врикьевна",
   ">стахий":"стахиевич стахиевна" }
+rus.patrMfSfx = { "ич":" овна|на",
+  "мич":"ма минична",
+  "тич":"та тична",
+  "лич":"ла лична",
+  "пич":"па пична",
+  "кич":"ка кична",
+  "нич":"на нична",
+  "ьич":"ья ьинична",
+  "евич":"й евна",
+  "ович":" овна",
+  "ввич":"вва ввична",
+  "имич":"има имична",
+  "укич":"ука укинична",
+  "ынич":"ыня ынична",
+  "иевич":"ий иевна|ьевна",
+  "ьевич":"ий иевна|ьевна",
+  "левич":"ль левна",
+  "ревич":"рь ревна",
+  "вович":"в вовна|вна",
+  ">иович":"иов иовна",
+  "навич":"нава навична",
+  "вилич":"вила вилична|виловна",
+  ">силич":"сила силовна",
+  "гиевич":"гий гиевна",
+  "циевич":"ций циевна",
+  "киевич":"кий киевна",
+  "влевич":"в влевна",
+  ">прович":"пров провна",
+  "йлович":"ил иловна|йловна",
+  "влович":"вел вловна",
+  "ьвович":"ев ьвовна",
+  "ртиевич":"ртий ртиевна",
+  "гриевич":"грий гриевна",
+  "фриевич":"фрий фриевна",
+  "триевич":"трий триевна",
+  "клиевич":"клий клиевна",
+  "ксиевич":"ксий ксиевна",
+  "вдиевич":"вдий вдиевна",
+  "рмиевич":"рмий рмиевна",
+  ">юрьевич":"юрий юрьевна",
+  "етрович":"ётр етровна",
+  "рилович":"рил|рила рильевна|риловна",
+  "вилович":"вила вилична|виловна",
+  "килович":"кила киловна",
+  "ойлович":"ойла ойловна",
+  "ториевич":"торий ториевна",
+  ">гелиевич":"гелий гелиевна",
+  ">милиевич":"милий милиевна",
+  ">радиевич":"радий радиевна",
+  "иопиевич":"иопий иопиевна",
+  "импиевич":"импий импиевна",
+  "сильевич":"силий сильевна",
+  "рильевич":"рил|рила рильевна|риловна",
+  "анилович":"анил|анила аниловна",
+  "маилович":"маил маиловна|майловна",
+  "хайлович":"хаил хайловна",
+  ">авериевич":"аверий авериевна",
+  ">стахиевич":"стахий стахиевна",
+  "врикиевич":"врикий врикиевна|врикьевна",
+  "игорьевич":"игорий игорьевна",
+  ">эмильевич":"эмиль эмильевна" }
+rus.patrFfSfx = { "на":" ович|ич",
+  "овна":" ович",
+  "евна":"й евич",
+  "ична":"а ич",
+  "вовна":"в вович|вич",
+  ">иовна":"иов иович",
+  "ьевна":"ий иевич|ьевич",
+  "иевна":"ий иевич|ьевич",
+  "ревна":"рь ревич",
+  "левна":" левич",
+  ">провна":"пров прович",
+  "ьвовна":"ев ьвович",
+  "вловна":"вел влович",
+  "йловна":"ил йлович",
+  "киевна":"кий киевич",
+  "циевна":"ций циевич",
+  "гиевна":"гий гиевич",
+  "елевна":"ель елевич",
+  "ынична":"ыня ынич",
+  "инична":"а ич",
+  "етровна":"ётр етрович",
+  "риловна":"рил|рила рильевич|рилович",
+  ">силовна":"сила силич",
+  "виловна":"вила вилич|вилович",
+  "киловна":"кила килович",
+  "ойловна":"ойла ойлович",
+  ">юрьевна":"юрий юрьевич",
+  "ксиевна":"ксий ксиевич",
+  "ртиевна":"ртий ртиевич",
+  "гриевна":"грий гриевич",
+  "триевна":"трий триевич",
+  "фриевна":"фрий фриевич",
+  "клиевна":"клий клиевич",
+  "вдиевна":"вдий вдиевич",
+  "рмиевна":"рмий рмиевич",
+  "ьинична":"ья ьич",
+  ">минична":"мина минич",
+  "вилична":"вила вилич|вилович",
+  "аниловна":"анил|анила анилович",
+  "маиловна":"маил маилович|майлович",
+  "майловна":"маил маилович|майлович",
+  "сильевна":"силий сильевич",
+  "рильевна":"рил|рила рильевич|рилович",
+  "ториевна":"торий ториевич",
+  ">милиевна":"милий милиевич",
+  ">гелиевна":"гелий гелиевич",
+  ">радиевна":"радий радиевич",
+  "иопиевна":"иопий иопиевич",
+  "импиевна":"импий импиевич",
+  ">эмильевна":"эмиль эмильевич",
+  "игорьевна":"игорий игорьевич",
+  ">стахиевна":"стахий стахиевич",
+  ">авериевна":"аверий авериевич",
+  "врикиевна":"врикий врикиевич|врикьевич" }
 
 
 //Methods
@@ -2516,182 +2631,211 @@ var wordBoundary = ">"
 
 //return forms for the normal form from the suffix dictionary
 function getForms(nForm, suffixDict, lang) {
-	var nFormAlts = nForm.split("|");
+  var nFormAlts = nForm.split("|");
 
-	for (var a = 0; a < nFormAlts.length; a++){
-		var nFormAlt = nFormAlts[a];
+  for (var a = 0; a < nFormAlts.length; a++){
+    var nFormAlt = nFormAlts[a];
 
-		if (!suffixDict) return console.error("no dict passed")
-		suffixDict = suffixDict;
-		if (suffixDict[wordBoundary + nFormAlt]) {
-			//whole word exists
-			return suffixDict[wordBoundary + nFormAlt]
-		}
+    if (!suffixDict) return console.error("no dict passed")
+    suffixDict = suffixDict;
+    if (suffixDict[wordBoundary + nFormAlt]) {
+      //whole word exists
+      return suffixDict[wordBoundary + nFormAlt]
+    }
 
-		for (var i = nFormAlt.length; i >= 0; i--){
-			var suffix = nFormAlt.slice(nFormAlt.length - i, nFormAlt.length);
-			//try to fetch specific form at first
-			if (suffixDict[suffix]){
-				return prefixize(suffixDict[suffix], nFormAlt.slice(0, nFormAlt.length - i))
-			}
+    for (var i = nFormAlt.length; i >= 0; i--){
+      var suffix = nFormAlt.slice(nFormAlt.length - i, nFormAlt.length);
+      //try to fetch specific form at first
+      if (suffixDict[suffix]){
+        return prefixize(suffixDict[suffix], nFormAlt.slice(0, nFormAlt.length - i))
+      }
 
-			//try every possible generalized combination, from less general to more general
-			var genSfx = suffix;
-			while ((genSfx = generalize(genSfx, lang)) !== false){
-				if (suffixDict[genSfx]){
-					var result = degeneralizeForms(suffixDict[genSfx], genSfx, suffix);
-					//TODO: replace generalizations in result					
-					//TODO: replace \1, \2, ... references in result
-					return prefixize(result, nFormAlt.slice(0, nFormAlt.length - i))
-				}
-			}
-		}
-	}
+      //try every possible generalized combination, from less general to more general
+      var genSfx = suffix;
+      while ((genSfx = generalize(genSfx, lang)) !== false){
+        if (suffixDict[genSfx]){
+          var result = degeneralizeForms(suffixDict[genSfx], genSfx, suffix);
+          //TODO: replace generalizations in result         
+          //TODO: replace \1, \2, ... references in result
+          return prefixize(result, nFormAlt.slice(0, nFormAlt.length - i))
+        }
+      }
+    }
+  }
 }
 
 //return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
 function generalize(str, lang){
-	if (!str) return "";
-	if (!lang) lang = rus;
+  if (!str) return "";
+  if (!lang) lang = rus;
 
-	if (str.length === 1 && !lang.genGroups[str[0]]) return false;
+  if (str.length === 1 && !lang.genGroups[str[0]]) return false;
 
-	//increase first symbol gen group, if possible
-	if (lang.genGroups[str[0]]) return lang.genGroups[str[0]] + str.slice(1);
+  //increase first symbol gen group, if possible
+  if (lang.genGroups[str[0]]) return lang.genGroups[str[0]] + str.slice(1);
 
-	//and if it’s reached maximum already - increase next one's group
-	var nextGen = generalize(str.slice(1), lang);
-	if (nextGen === false) return false;
+  //and if it’s reached maximum already - increase next one's group
+  var nextGen = generalize(str.slice(1), lang);
+  if (nextGen === false) return false;
 
-	var result = str[0] + nextGen;
+  var result = str[0] + nextGen;
 
-	return result;
+  return result;
 }
 
 //make forms of the general level according to genSfx level
 function generalizeForms(forms, genSfx){
-	for (var i = 0; i < genSfx.length; i++) {
-		if (rus.groups[genSfx[i]]){
+  for (var i = 0; i < genSfx.length; i++) {
+    if (rus.groups[genSfx[i]]){
+      //console.log(forms, genSfx[i])
+      forms = mapForms(forms, function(form){
+        if (form[i] && isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
+        return form;
+      })
 
-			forms = mapForms(forms, function(form){
-				if (isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
-				return form;
-			})
-		}
-	};
+    }
+  };
 
-	return forms
+  return forms
 }
 
 //specify forms based on specific suffix
 function degeneralizeForms(genForms, genSfx, sfx){
-	for (var i = 0; i < genSfx.length; i++) {
-		if (rus.groups[genSfx[i]]){
-			genForms = mapForms(genForms, function(form){
-				return form.replace(genSfx[i], sfx[i])
-			})
-		}
-	};
+  for (var i = 0; i < genSfx.length; i++) {
+    if (rus.groups[genSfx[i]]){
+      genForms = mapForms(genForms, function(form){
+        return form.replace(genSfx[i], sfx[i])
+      })
+    }
+  };
 
-	return genForms;
+  return genForms;
 }
 
 
 
 //tests whether genStr is general form of str 
 function isGeneralOf(targetGenStr, str, lang){
+  if (!str) throw new Error("No string passed: ", str);
+  if (!lang) lang = rus;
 
-	if (!lang) lang = rus;
+  if (targetGenStr === str) return true;
+  var genStr = generalize(str);
 
-	if (targetGenStr === str) return true;
-	var genStr = generalize(str);
+  while (genStr !== false){
+    if (genStr === targetGenStr) return true;
+    genStr = generalize(genStr, lang);
+  }
 
-	while (genStr !== false){
-		if (genStr === targetGenStr) return true;
-		genStr = generalize(genStr, lang);
-	}
+  if (genStr === targetGenStr) return true;
 
-	if (genStr === targetGenStr) return true;
-
-	return false;
+  return false;
 }
 
 //tests whether at least one normal form of word from the list is covered by the generalized suffix passed
 //return number of words having suffix
 function hasSuffix(list, genSfx, lang){
-	if (genSfx === "") return list.length;
-	if (!genSfx) return 0;
+  if (genSfx === "") return list.length;
+  if (!genSfx) return 0;
 
-	var num = 0;
+  var num = 0;
 
-	for (var i = 0; i < list.length; i++){
-		var wordAlts = list[i].split(" ")[0].split("|");
-		for (var a = 0; a < wordAlts.length; a++){
-			var word = wordAlts[a];
-			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
-				num++
-			}
-		}
-	}
+  for (var i = 0; i < list.length; i++){
+    var wordAlts = list[i].split(" ")[0].split("|");
+    for (var a = 0; a < wordAlts.length; a++){
+      var word = wordAlts[a];
+      if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+        num++
+      }
+    }
+  }
 
-	return num;
+  return num;
 }
 
 //returns idx of sfx in list
 function indexOfSuffix(list, genSfx, lang){
-	if (genSfx === "") return 0;
-	if (!genSfx) return -1;
+  if (genSfx === "") return 0;
+  if (!genSfx) return -1;
 
-	for (var i = 0; i < list.length; i++){
-		var wordAlts = list[i].split(" ")[0].split("|");
-		for (var a = 0; a < wordAlts.length; a++){
-			var word = wordAlts[a];
-			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
-				return i;
-			}
-		}
-	}
+  for (var i = 0; i < list.length; i++){
+    var wordAlts = list[i].split(" ")[0].split("|");
+    for (var a = 0; a < wordAlts.length; a++){
+      var word = wordAlts[a];
+      if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+        return i;
+      }
+    }
+  }
 
-	return -1;
+  return -1;
 }
 
 //applies fn to all forms in string
 function mapForms(formsStr, fn){
-	if (typeof formsStr !== "string") return console.error("non string passed", formsStr)
+  if (typeof formsStr !== "string") return console.error("non string passed", formsStr)
 
-	var result = "";
-	
-	var forms = formsStr.split(" ");
-	for (var i = 0; i < forms.length; i++){
-		var alts = forms[i].split("|");
-		for (var j = 0; j < alts.length; j++){
-			result += fn(alts[j]) + "|"
-		}
-		result = result.slice(0, -1) + " ";
-	}
-	return result.slice(0, -1);
+  var result = "";
+  
+  var forms = formsStr.split(" ");
+  for (var i = 0; i < forms.length; i++){
+    var alts = forms[i].split("|");
+    for (var j = 0; j < alts.length; j++){
+      result += fn(alts[j]) + "|"
+    }
+    result = result.slice(0, -1) + " ";
+  }
+  return result.slice(0, -1);
 }
 
 //gets "ович овна|евна", returns "рович ровна|ревна"
 function prefixize(forms, prefix){
-	return mapForms(forms, function(form, i){
-		return prefix + form
-	})
+  return mapForms(forms, function(form, i){
+    return prefix + form
+  })
 }
 
 
 //gets "ович овна|евна", returns "вич вна|вна"
 function unprefixize(forms, num){
-	return mapForms(forms, function(form, i){
-		return form.slice(num)
-	})
+  return mapForms(forms, function(form, i){
+    return form.slice(num)
+  })
 }
 
-function toLowerCaseDict(source){
-	for (var i = 0; i < source.length; i++){
-		source[i] = source[i].toLowerCase();
-	}
-	return source;
+//lowercasifies list of forms
+function toLowerCaseList(source){
+  for (var i = 0; i < source.length; i++){
+    source[i] = source[i].toLowerCase();
+  }
+  return source;
+}
+
+//returns normal forms object based on forms array passed
+function getNfDict(formsSource, nfNumber){
+  if (!formsSource || !formsSource.length) return console.error("No formsSource passed")
+
+  //max number of formsSource
+  var formsNumber = formsSource[0].split(" ").length;
+
+  nfNumber = nfNumber || 0;
+
+  //get normal-form-keyed object
+  var source = {};
+  for (var i = 0; i < formsSource.length; i++) {
+    var forms = formsSource[i].split(" "),
+      nForm = forms[nfNumber];
+
+    forms.splice(nfNumber, 1);
+
+    var nFormAlts = nForm.split("|");
+    for (var a = 0; a < nFormAlts.length; a++) {
+      source[nFormAlts[a]] = forms.join(" ");
+    }
+
+  }
+
+  return source;
 }
 
 

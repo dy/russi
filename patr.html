@@ -139,38 +139,46 @@
 
 <script>
 	//app
-	var $nf = document.getElementById("name"); 
+	var $nf = document.getElementById("name");
 	var $mf = document.getElementById("patr-male"); 
 	var $ff = document.getElementById("patr-female");
 
-	var nf = "", forms = rus.getForms(nf, rus.patrNfSfxTable);
-
 	window.addEventListener("popstate", function(e){
-		nf = location.hash.slice(1);
-		$nf.value = nf;
-		update(false);
+		var nf = location.hash.slice(1);
+		update(nf);
 	})
 
 	$nf.addEventListener("keyup", function(e){
-		nf = $nf.value;
-		update();
+		updateUrl($nf.value);
 	})
 	$mf.addEventListener("keyup", function(e){
-		update();
+		var forms = rus.getForms($mf.value, rus.patrMfSfx, rus);
+		console.log(forms)
+		//var nf = forms.split(" ")[0].split("|")[0];
+		//updateUrl(nf);
 	})
 	$ff.addEventListener("keyup", function(e){
-		update();
+		//var forms = rus.getForms($ff.value, rus.patrFfSfx);
+		//nf = forms.split(" ")[0].split("|")[0];
+		//update();
 	})
 
  
-	function update(updUrl){
-		forms = rus.getForms(nf, rus.patrNfSfxTable);
-		$mf.value = nf ? forms.split(" ")[0].split("|")[0] : ""
-		$ff.value = nf ? forms.split(" ")[1].split("|")[0] : ""
+	function update(nf){
+		forms = rus.getForms(nf, rus.patrNfSfx);
 
-		if (updUrl !== false){
-			location.hash = "#" + nf;
-		}
+		var mf = forms.split(" ")[0].split("|")[0];
+		var ff = forms.split(" ")[0].split("|")[0];
+
+		console.log(mf)
+
+		if (nf !== $nf.value) $nf.value = nf ? nf : "";	
+		if (mf !== $mf.value) $mf.value = nf ? mf : "";	
+		if (ff !== $ff.value) $ff.value = nf ? ff : "";	
+	}
+
+	function updateUrl(nf){
+		location.hash = "#" + nf;
 	}
 
 </script>
