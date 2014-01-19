@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<title>преобразователь отчеств</title>
+
+<style type="text/css">
+	*{
+		box-sizing: border-box;
+	}
+	nav{
+		color: #bbb;
+		line-height: 40px;
+		font-size: 15px;
+		margin-bottom: 10px;
+	}
+	nav a{
+		font-weight: normal;
+		color: #333;
+		display: inline-block;
+		margin:0 0;
+		font-size: 19px;
+		text-decoration: none;
+	}
+	nav a:hover{
+		text-decoration: underline;
+	}
+	aside{
+		background: white;
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 20%;
+		padding: 10px 20px;
+		font-size: 14px;
+	}
+	aside ul{
+		list-style: none;
+		padding: 0;
+	}
+	aside a{
+		color: #345;
+	}
+	aside footer{
+		bottom: 0;
+		position: absolute;
+	}
+	body{
+		font-family: sans-serif;
+		line-height: 1.5;
+		background: #f6f6f6;
+	}
+	.names{
+		list-style: none;
+		font-size: 12px;
+		line-height: 2;
+		padding: 0;
+	}
+	.name{
+		display: inline-block;
+	}
+	.badge{
+		background: #bbb;
+		color: white;
+		padding: 2px 5px;
+		border: 1px solid #999;
+		border-radius: 2px;
+		text-decoration: none;
+		text-shadow: 0 -1px 0 #999;
+	}
+	.badge:hover{
+		background: #888;
+		border-color: #777;
+	}
+	.badge:visited{
+		background: #cc88cc;
+		border-color: #aa77aa;
+	}
+	.input{
+		width: 26%;
+		position: relative;
+		display: inline-block;
+	}
+	input{
+		line-height: 40px;
+		font-size: 20px;
+		padding: 0 1%;
+		margin: 20px 0;
+		width: 100%;
+		vertical-align: top;
+	}
+	label{
+		position: absolute;
+		font-size: 12px;
+		line-height: 20px;
+		color: #bbb;
+		left: 0;
+		top: 0;
+	}
+	input:focus + label{
+		color: #000;
+	}
+	button{
+		line-height: 40px;
+		margin: 20px 0;
+		padding: 0 10px;
+		font-size: 14px;
+		margin-left: .5%;
+		font-weight: bolder;
+		vertical-align: top;
+		max-width: 18%;
+		color: #222;
+		text-shadow: 0 1px white;
+	}
+
+	footer{
+		font-size: 13px;
+		padding: 0 5px;
+	}
+	footer a{
+		color: rgb(157, 86, 163);
+	}
+	.copyright{
+		text-align: right;
+	}
+	.logo{
+		font-size: 40px;
+		text-align: center;
+		width: 80%;
+		right: 0;
+		left: 10%;
+		position: absolute;
+		top: 50%;
+		margin-top: -150px;
+	}
+	.flag{
+		position: relative;
+		margin: 0 auto;
+		width: 300px;
+		height: 200px;
+		background: #0267B5;
+		display: inline-block;
+		vertical-align: middle;
+		box-shadow: 0 1px 14px rgba(160, 160, 177, 0.44);;
+	}
+	.flag:before, .flag:after{
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 33.3%;
+		background: white;
+	}
+	.flag:after{
+		bottom: 0;
+		top: auto;
+		background: #E70104;
+	}
+</style>
+
+<div class="logo">
+	<div class="flag" title="Русь.js"></div>.js
+</div>
+
+<aside>
+	<ul>
+		<li><a href="patr.html">Построитель/распознаватель отчеств</a></li>
+	</ul>
+<footer>
+	<p class="copyright">Сделал <a href="http://github.com/dfcreative">Дима Иванов</a></p>
+</footer>
+</aside>
