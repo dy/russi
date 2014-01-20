@@ -143,19 +143,14 @@
 	var $mf = document.getElementById("patr-male"); 
 	var $ff = document.getElementById("patr-female");
 
-	window.addEventListener("popstate", function(e){
-		var nf = location.hash.slice(1);
-		update(nf);
-	})
-
 	$nf.addEventListener("keyup", function(e){
 		updateUrl($nf.value);
 	})
 	$mf.addEventListener("keyup", function(e){
 		var forms = rus.getForms($mf.value, rus.patrMfSfx, rus);
-		console.log(forms)
-		//var nf = forms.split(" ")[0].split("|")[0];
-		//updateUrl(nf);
+		if (forms === undefined) return updateInputs("не определить", undefined, "не определить");
+		var nf = forms.split(" ")[0].split("|")[0];
+		updateUrl(nf);
 	})
 	$ff.addEventListener("keyup", function(e){
 		//var forms = rus.getForms($ff.value, rus.patrFfSfx);
@@ -165,20 +160,32 @@
 
  
 	function update(nf){
-		forms = rus.getForms(nf, rus.patrNfSfx);
+		var mf = "";
+		var ff = "";
+		if (nf){
+			forms = rus.getForms(nf, rus.patrNfSfx);
+			mf = forms.split(" ")[0].split("|")[0];
+			ff = forms.split(" ")[0].split("|")[0];
+		} else {
 
-		var mf = forms.split(" ")[0].split("|")[0];
-		var ff = forms.split(" ")[0].split("|")[0];
+		}
 
-		console.log(mf)
+		updateInputs(nf, mf, ff);
+	}
 
-		if (nf !== $nf.value) $nf.value = nf ? nf : "";	
-		if (mf !== $mf.value) $mf.value = nf ? mf : "";	
-		if (ff !== $ff.value) $ff.value = nf ? ff : "";	
+	function updateInputs(nf, mf, ff){
+		if (nf !== $nf.value && mf !== undefined) $nf.value = nf ? nf : "";	
+		if (mf !== $mf.value && mf !== undefined) $mf.value = nf ? mf : "";	
+		if (ff !== $ff.value && mf !== undefined) $ff.value = nf ? ff : "";
 	}
 
 	function updateUrl(nf){
 		location.hash = "#" + nf;
 	}
+
+	window.addEventListener("popstate", function(e){
+		var nf = location.hash.slice(1);
+		update(nf);
+	})
 
 </script>
