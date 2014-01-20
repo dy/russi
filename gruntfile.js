@@ -8,12 +8,12 @@ require("./src/RadixTrei.js");
 module.exports = function(grunt) {
 
 	//converts TSV dict to array
-	function dictToArray(path, options){
+	function tsvToArray(path, options){
 		options = options || {};
 		options.divider = options.divider || " ";
 
 		//returns serialized array
-		//grunt.log.write("dictToArray: `" + path + "`\n")
+		//grunt.log.write("tsvToArray: `" + path + "`\n")
 		var src = grunt.file.read(path);
 		//grunt.log.write(src)
 
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
 					projectName: "<%= pkg.name %>",
 					generalizeScheme: generalizeScheme,
 					getEndingScheme: getEndingScheme,
-					dictToArray: dictToArray
+					tsvToArray: tsvToArray
 				}
 			},
 			dev: {
@@ -118,7 +118,7 @@ module.exports = function(grunt) {
 					projectName: "<%= pkg.name %>",
 					generalizeScheme: generalizeScheme,
 					getEndingScheme: getEndingScheme,
-					dictToArray: dictToArray
+					tsvToArray: tsvToArray
 				}
 			}
 		},

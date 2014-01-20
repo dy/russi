@@ -27,6 +27,7 @@ function getForms(nForm, suffixDict, lang) {
 
 			//try every possible generalized combination, from less general to more general
 			var genSfx = suffix;
+			//console.log(genSfx)
 			while ((genSfx = generalize(genSfx, lang)) !== false){
 				if (suffixDict[genSfx]){
 					var result = degeneralizeForms(suffixDict[genSfx], genSfx, suffix);
@@ -42,7 +43,7 @@ function getForms(nForm, suffixDict, lang) {
 
 //return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
 function generalize(str, lang){
-	if (!str) return "";
+	if (!str) return false;
 	if (!lang) lang = rus;
 
 	if (str.length === 1 && !lang.genGroups[str[0]]) return false;
@@ -52,11 +53,9 @@ function generalize(str, lang){
 
 	//and if it’s reached maximum already - increase next one's group
 	var nextGen = generalize(str.slice(1), lang);
-	if (nextGen === false) return false;
+	if (nextGen !== false) return str[0] + nextGen;
 
-	var result = str[0] + nextGen;
-
-	return result;
+	return "";
 }
 
 //make forms of the general level according to genSfx level

@@ -1,17 +1,17 @@
 var rus = {};
 
-rus.alphabete = //#put dictToArray("dicts/alphabete.txt", {format: "letter", join: ""});
-rus.vowels = //#put dictToArray("dicts/alphabete.txt", {filter: "vowel", join:"", format: "letter"})
-rus.consonants = //#put dictToArray("dicts/alphabete.txt", {filter: "consonant", join:"", format: "letter"})
-rus.voiced = //#put dictToArray("dicts/alphabete.txt", {filter: "voiced", join:"", format: "letter"})
-rus.unvoiced = //#put dictToArray("dicts/alphabete.txt", {filter: "unvoiced", join:"", format: "letter"})
-rus.sibilant = //#put dictToArray("dicts/alphabete.txt", {filter: "sibilant", join:"", format: "letter"})
+rus.alphabete = //#put tsvToArray("dicts/alphabete.txt", {format: "letter", join: ""});
+rus.vowels = //#put tsvToArray("dicts/alphabete.txt", {filter: "vowel", join:"", format: "letter"})
+rus.consonants = //#put tsvToArray("dicts/alphabete.txt", {filter: "consonant", join:"", format: "letter"})
+rus.voiced = //#put tsvToArray("dicts/alphabete.txt", {filter: "voiced", join:"", format: "letter"})
+rus.unvoiced = //#put tsvToArray("dicts/alphabete.txt", {filter: "unvoiced", join:"", format: "letter"})
+rus.sibilant = //#put tsvToArray("dicts/alphabete.txt", {filter: "sibilant", join:"", format: "letter"})
 
-rus.prepositions = //#put dictToArray("dicts/prepositions.txt");
-rus.prefixes = //#put dictToArray("dicts/prefixes.txt");
-rus.pronouns = //#put dictToArray("dicts/pronouns.txt");
+rus.prepositions = //#put tsvToArray("dicts/prepositions.txt");
+rus.prefixes = //#put tsvToArray("dicts/prefixes.txt");
+rus.pronouns = //#put tsvToArray("dicts/pronouns.txt");
 
-rus.names = //#put dictToArray("dicts/names.txt", {format: "name"});
+rus.names = //#put tsvToArray("dicts/names.txt", {format: "name"});
 
 //TODO: generate these groups automatically
 //generate groups
@@ -106,7 +106,7 @@ rus.genGroups = {
     S: "C"
 }
 
-//#define patronimics = dictToArray("dicts/patronimics.txt");
+//#define patronimics = tsvToArray("dicts/patronimics.txt");
 //#if DEV
 rus.patronimics = //#put patronimics;
 //#endif
