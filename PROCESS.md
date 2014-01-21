@@ -42,4 +42,6 @@
 * Is it better to use nf-keyed objects to build table or use multiforms table builder?
 	* Nf-keyed table is simplied to build (defer multitable builder)
 	* There’s a risc that multitables’d be too huge comparing to single tables. Whereas single-form tables can shorten itselves’ resulting form diversity, multitables are too difficult to shorten.
-	
+
+
+* About suffixes: it is sensible to generalize joining to groups (syllables), like forming primitive patterns: CVVC, CV
