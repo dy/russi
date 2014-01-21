@@ -150,6 +150,7 @@
 	$mf.addEventListener("keyup", function(e){
 		if (!isAllowedKey(e)) return;
 		var forms = rus.getForms($mf.value, rus.patrMfSfx, rus);
+		if ($mf.value === "") return updateInputs("", "", "")
 		if (forms === undefined) return updateInputs(undefined, null, undefined);
 		var nf = forms.split(" ")[0].split("|")[0];
 		updateUrl(nf);
@@ -157,6 +158,7 @@
 	$ff.addEventListener("keyup", function(e){
 		if (!isAllowedKey(e)) return;
 		var forms = rus.getForms($ff.value, rus.patrFfSfx, rus);
+		if ($ff.value === "") return updateInputs("", "", "")
 		if (forms === undefined) return updateInputs(undefined, undefined, null);
 		var nf = forms.split(" ")[0].split("|")[0];
 		updateUrl(nf);
@@ -184,11 +186,11 @@
 
 	function updateInputs(nf, mf, ff){
 		//undefined shows ambiguity		
-		if (nf === undefined) {
-			$nf.placeholder = "не определить"
-			$nf.value = ""
-		} else if (nf === "") {
+		if (nf === "") {
 			$nf.placeholder = "∀"
+			$nf.value = ""
+		} else if (nf === undefined) {
+			$nf.placeholder = "не определить"
 			$nf.value = ""
 		} else if (nf === null) {
 		} else if (nf.split("|")[0] !== $nf.value && nf.split("|")[1] !== $nf.value) {
@@ -196,11 +198,11 @@
 		}
 
 
-		if (mf === undefined) {
-			$mf.placeholder = "не определить"
-			$mf.value = ""
-		} else if (mf === "") {
+		if (mf === "") {
 			$mf.placeholder = "∀ович"
+			$mf.value = ""
+		} else if (mf === undefined) {
+			$mf.placeholder = "не определить"
 			$mf.value = ""
 		} else if (mf === null) {
 		} else if (mf.split("|")[0] !== $mf.value && mf.split("|")[1] !== $mf.value) {
@@ -208,11 +210,11 @@
 		}
 
 
-		if (ff === undefined) {
-			$ff.placeholder = "не определить"
-			$ff.value = ""
-		} else if (ff === "") {
+		if (ff === "") {
 			$ff.placeholder = "∀овна"
+			$ff.value = ""
+		} else if (ff === undefined) {
+			$ff.placeholder = "не определить"
 			$ff.value = ""
 		} else if (ff === null) {
 		} else if (ff.split("|")[0] !== $ff.value && ff.split("|")[1] !== $ff.value) {
