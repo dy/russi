@@ -1,5 +1,7 @@
 //Buiding-stage dependencies
+global.rus = {};
 require("./src/util.js");
+require("./src/main.js");
 require("./src/endingSchemeBuilder.js");
 require("./src/RadixTrei.js");
 

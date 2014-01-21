@@ -41,14 +41,14 @@
 	var source = toLowerCaseList(source);
 
 
-	var suffixes = getEndingScheme(getNfDict(source, 1));
-	var genSuffixes = generalizeScheme(suffixes, getNfDict(source, 1), rus);
+	var suffixes = getEndingScheme(getNfDict(source, 0));
+	var genSuffixes = generalizeScheme(suffixes, getNfDict(source, 0), rus);
 
-	testCorrectness(suffixes, getNfDict(source, 1), rus);
-	console.log("qty: " + estimateQuality(getEndingScheme, getNfDict(source, 1), rus));
+	testCorrectness(suffixes, getNfDict(source, 0), rus);
+	console.log("qty: " + estimateQuality(getEndingScheme, getNfDict(source, 0), rus));
 
-	//testCorrectness(genSuffixes, getNfDict(source, 1), rus);
-	//console.log("qty: " + estimateQuality(function(source, num){ return generalizeScheme(getEndingScheme(source, num), source, rus) }, getNfDict(source, 1), rus));
+	//testCorrectness(genSuffixes, getNfDict(source, 0), rus);
+	//console.log("qty: " + estimateQuality(function(source, num){ return generalizeScheme(getEndingScheme(source, num), source, rus) }, getNfDict(source, 0), rus));
 
 	//render json
 	/*var pfs = Object.getOwnPropertyNames(genSuffixes).sort(function(a,b){return b.length - a.length});

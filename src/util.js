@@ -1,10 +1,11 @@
 //Vars
-var wordBoundary = ">"
+var wordBoundary = ">";
+var	lang = rus;
 
 
 //return forms for the normal form from the suffix dictionary
 //TODO: get rid of lang;
-//TODO: not working on `rus.getForms("Арт", rus.patrMfSfx, rus)`
+//TODO: not working on `lang.getForms("Арт", lang.patrMfSfx, lang)`
 function getForms(nForm, suffixDict, lang) {
 	var nFormAlts = nForm.split("|");
 
@@ -27,11 +28,11 @@ function getForms(nForm, suffixDict, lang) {
 
 			//try every possible generalized combination, from less general to more general
 			var genSfx = suffix;
-			//console.log(genSfx)
 			while ((genSfx = generalize(genSfx, lang)) !== false){
+				//console.log(genSfx)
 				if (suffixDict[genSfx]){
 					var result = degeneralizeForms(suffixDict[genSfx], genSfx, suffix);
-					//TODO: replace generalizations in result					
+					//TODO: replace generalizations in result
 					//TODO: replace \1, \2, ... references in result
 					return prefixize(result, nFormAlt.slice(0, nFormAlt.length - i))
 				}
@@ -42,9 +43,8 @@ function getForms(nForm, suffixDict, lang) {
 
 
 //return generalized letter (sequentially, starting from the leftmost symbol, like ай → αй → νй → αβ)
-function generalize(str, lang){
+function generalize(str){
 	if (!str) return false;
-	if (!lang) lang = rus;
 
 	if (str.length === 1 && !lang.genGroups[str[0]]) return false;
 
@@ -52,16 +52,16 @@ function generalize(str, lang){
 	if (lang.genGroups[str[0]]) return lang.genGroups[str[0]] + str.slice(1);
 
 	//and if it’s reached maximum already - increase next one's group
-	var nextGen = generalize(str.slice(1), lang);
+	var nextGen = generalize(str.slice(1));
 	if (nextGen !== false) return str[0] + nextGen;
 
-	return "";
+	return false;
 }
 
 //make forms of the general level according to genSfx level
 function generalizeForms(forms, genSfx){
 	for (var i = 0; i < genSfx.length; i++) {
-		if (rus.groups[genSfx[i]]){
+		if (lang.groups[genSfx[i]]){
 			//console.log(forms, genSfx[i])
 			forms = mapForms(forms, function(form){
 				if (form[i] && isGeneralOf(genSfx[i], form[i])) return form.replace(form[i], genSfx[i])
@@ -77,7 +77,7 @@ function generalizeForms(forms, genSfx){
 //specify forms based on specific suffix
 function degeneralizeForms(genForms, genSfx, sfx){
 	for (var i = 0; i < genSfx.length; i++) {
-		if (rus.groups[genSfx[i]]){
+		if (lang.groups[genSfx[i]]){
 			genForms = mapForms(genForms, function(form){
 				return form.replace(genSfx[i], sfx[i])
 			})
@@ -90,16 +90,15 @@ function degeneralizeForms(genForms, genSfx, sfx){
 
 
 //tests whether genStr is general form of str 
-function isGeneralOf(targetGenStr, str, lang){
+function isGeneralOf(targetGenStr, str){
 	if (!str) throw new Error("No string passed: ", str);
-	if (!lang) lang = rus;
 
 	if (targetGenStr === str) return true;
 	var genStr = generalize(str);
 
 	while (genStr !== false){
 		if (genStr === targetGenStr) return true;
-		genStr = generalize(genStr, lang);
+		genStr = generalize(genStr);
 	}
 
 	if (genStr === targetGenStr) return true;
@@ -109,7 +108,7 @@ function isGeneralOf(targetGenStr, str, lang){
 
 //tests whether at least one normal form of word from the list is covered by the generalized suffix passed
 //return number of words having suffix
-function hasSuffix(list, genSfx, lang){
+function hasSuffix(list, genSfx){
 	if (genSfx === "") return list.length;
 	if (!genSfx) return 0;
 
@@ -119,7 +118,7 @@ function hasSuffix(list, genSfx, lang){
 		var wordAlts = list[i].split(" ")[0].split("|");
 		for (var a = 0; a < wordAlts.length; a++){
 			var word = wordAlts[a];
-			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+			if (isGeneralOf(genSfx, word.slice(-genSfx.length))){
 				num++
 			}
 		}
@@ -129,7 +128,7 @@ function hasSuffix(list, genSfx, lang){
 }
 
 //returns idx of sfx in list
-function indexOfSuffix(list, genSfx, lang){
+function indexOfSuffix(list, genSfx){
 	if (genSfx === "") return 0;
 	if (!genSfx) return -1;
 
@@ -137,7 +136,7 @@ function indexOfSuffix(list, genSfx, lang){
 		var wordAlts = list[i].split(" ")[0].split("|");
 		for (var a = 0; a < wordAlts.length; a++){
 			var word = wordAlts[a];
-			if (isGeneralOf(genSfx, word.slice(-genSfx.length), lang)){
+			if (isGeneralOf(genSfx, word.slice(-genSfx.length))){
 				return i;
 			}
 		}
@@ -223,4 +222,5 @@ g.generalize = generalize;
 g.wordBoundary = wordBoundary;
 g.toLowerCaseList = toLowerCaseList;
 g.getNfDict = getNfDict;
+g.getForms = getForms;
 //#endexclude

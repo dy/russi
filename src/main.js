@@ -1,5 +1,3 @@
-var rus = {};
-
 rus.alphabete = //#put tsvToArray("dicts/alphabete.txt", {format: "letter", join: ""});
 rus.vowels = //#put tsvToArray("dicts/alphabete.txt", {filter: "vowel", join:"", format: "letter"})
 rus.consonants = //#put tsvToArray("dicts/alphabete.txt", {filter: "consonant", join:"", format: "letter"})
@@ -114,7 +112,6 @@ rus.patronimics = //#put patronimics;
 rus.patrNfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 0)); 
 rus.patrMfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 1)); 
 rus.patrFfSfx = //#put getEndingScheme(getNfDict(toLowerCaseList(patronimics), 2)); 
-
 
 //Methods
 rus.getForms = getForms;
