@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Образование мужских и женских отчеств от русских имён.">
+    <meta name="theme-color" content="#f5f0e7">
+    <title>Отчество — конструктор отчеств</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <main>
+      <header class="masthead">
+        <a class="brand" href="./" aria-label="Отчество, главная">
+          <span class="brand-mark">О</span>
+          <span>Отчество</span>
+        </a>
+        <span class="edition">Словарь русских имён</span>
+      </header>
+
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Как будут звать детей?</p>
+        <h1 id="page-title">Имя отца превращается<br>в <em>отчество</em></h1>
+        <p class="intro">Введите имя — покажем мужскую и женскую формы, а также допустимые варианты написания.</p>
+
+        <form id="builder" class="builder" novalidate>
+          <label for="name">Имя отца</label>
+          <div class="field-row">
+            <input id="name" name="name" type="text" inputmode="text" autocomplete="off" spellcheck="false" maxlength="80" placeholder="Например, Александр" autofocus>
+            <button type="submit">Образовать <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="hint" id="hint">Попробуйте: <button type="button" data-example="Илья">Илья</button>, <button type="button" data-example="Лев">Лев</button> или <button type="button" data-example="Ярослав">Ярослав</button></p>
+          <p class="error" id="error" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="results" class="results" aria-live="polite" aria-labelledby="results-title" hidden>
+        <div class="result-heading">
+          <p class="eyebrow">Результат</p>
+          <h2 id="results-title">От имени <span id="source-name"></span></h2>
+          <span id="confidence" class="badge"></span>
+        </div>
+        <div class="cards">
+          <article class="card card-male">
+            <span class="symbol" aria-hidden="true">М</span>
+            <div><p>Мужское отчество</p><h3 id="masculine"></h3></div>
+            <button class="copy" type="button" data-copy="masculine" aria-label="Скопировать мужское отчество">Копировать</button>
+          </article>
+          <article class="card card-female">
+            <span class="symbol" aria-hidden="true">Ж</span>
+            <div><p>Женское отчество</p><h3 id="feminine"></h3></div>
+            <button class="copy" type="button" data-copy="feminine" aria-label="Скопировать женское отчество">Копировать</button>
+          </article>
+        </div>
+        <p class="note" id="note"></p>
+      </section>
+    </main>
+
+    <footer><span>Основано на словаре из 628 имён</span><span>Без рекламы и сбора данных</span></footer>
+  </body>
+</html>
