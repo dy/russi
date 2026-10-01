@@ -1,41 +1,16 @@
 {
-	"name": "rus",
-	"version": "0.0.1",
-	"description": "Russian language natural methods",
-	"homepage": "http://github.com/dfcreative/rus.js",
-	"keywords": ["transliterate", "syntax", "NLP", "humanize"],
-	"author": {
-		"name": "Dmitry",
-		"email": "df.creative@gmail.com",
-		"url": "http://dfcreative.github.com/project/rus-js/"
-	},
-	"licenses": [{
-		"type": "MIT"
-	}],
-	"repository": {
-		"type": "git",
-		"url": "http://github.com/dfcreative/rus.js.git",
-		"web": "http://github.com/dfcreative/rus.js"
-	},
-
-	"main": "gruntfile.js",
-	"scripts": {
-		"test": "grunt test"
-	},
-	"devDependencies": {
-		"grunt": "~0.4.1",
-		"grunt-contrib-jshint": "~0.6.4",
-		"grunt-contrib-qunit": "~0.2.2",
-		"grunt-contrib-concat": "~0.2.0",
-		"grunt-contrib-uglify": "~0.2.4",
-		"grunt-closure-compiler": ">0.0.20",
-		"grunt-contrib-watch": ">0.0.1",
-		"grunt-homemade": "~0.2.3",
-		"grunt-sweet.js": "*"
-	},
-	"peerDependencies": {
-		"grunt": "~0.4.1"
-	},
-
-	"engines": ["node >= 0.4"]
+  "name": "russi-patronymics",
+  "version": "1.0.0",
+  "description": "A modern Russian patronymic builder",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-data.js",
+    "check": "node --check src/app.js && node --check src/patronymics.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
 }
